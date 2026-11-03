@@ -3,6 +3,8 @@
 Toutes les captures d'Azmo OS, réalisées sur une machine de test avec des données de démonstration.
 Sur un Raspberry Pi, le modèle, la température et le bridage s'affichent aussi.
 
+## Premier démarrage
+
 ### Assistant : bienvenue
 
 <img src="images/assistant-1-bienvenue.webp" alt="Assistant : bienvenue" width="100%">
@@ -15,49 +17,87 @@ Sur un Raspberry Pi, le modèle, la température et le bridage s'affichent aussi
 
 <img src="images/assistant-3-pi.webp" alt="Assistant : détection du matériel et nom du Pi" width="100%">
 
-### Assistant : c'est prêt
-
-<img src="images/assistant-4-pret.webp" alt="Assistant : c'est prêt" width="100%">
-
 ### Connexion
 
 <img src="images/connexion.webp" alt="Connexion" width="100%">
 
-### Connexion : code de double authentification
+## Le bureau
 
-<img src="images/2fa-connexion.webp" alt="Connexion : code de double authentification" width="100%">
+### Le bureau : widgets à gauche, tes apps en icônes
 
-### Tableau de bord
+<img src="images/bureau.webp" alt="Le bureau : widgets à gauche, tes apps en icônes" width="100%">
 
-<img src="images/tableau-de-bord.webp" alt="Tableau de bord" width="100%">
+### Le lanceur : toutes les sections en un clic
+
+<img src="images/lanceur.webp" alt="Le lanceur : toutes les sections en un clic" width="100%">
+
+### La recherche globale (touche /)
+
+<img src="images/recherche.webp" alt="La recherche globale (touche /)" width="100%">
+
+### Le menu d'une application
+
+<img src="images/menu-application.webp" alt="Le menu d'une application" width="100%">
+
+### Les détails d'une application
+
+<img src="images/details-application.webp" alt="Les détails d'une application" width="100%">
+
+### La cloche des notifications
+
+<img src="images/notifications-cloche.webp" alt="La cloche des notifications" width="100%">
+
+## Fonds d'écran et thèmes
+
+### Fond « Océan »
+
+<img src="images/bureau-ocean.webp" alt="Fond « Océan »" width="100%">
+
+### Fond « Crépuscule »
+
+<img src="images/bureau-crepuscule.webp" alt="Fond « Crépuscule »" width="100%">
+
+### Fond « Nuit »
+
+<img src="images/bureau-nuit.webp" alt="Fond « Nuit »" width="100%">
+
+### Fond clair « Aube »
+
+<img src="images/bureau-aube.webp" alt="Fond clair « Aube »" width="100%">
+
+### Thème clair, fond « Lagon »
+
+<img src="images/theme-clair.webp" alt="Thème clair, fond « Lagon »" width="100%">
+
+### App Store en thème clair
+
+<img src="images/theme-clair-store.webp" alt="App Store en thème clair" width="100%">
+
+### Réglages et choix du fond d'écran
+
+<img src="images/reglages.webp" alt="Réglages et choix du fond d'écran" width="100%">
+
+## Les fenêtres
 
 ### Mes applications
 
 <img src="images/mes-applications.webp" alt="Mes applications" width="100%">
 
-### Détails d'une application
-
-<img src="images/details-application.webp" alt="Détails d'une application" width="100%">
-
 ### App Store
 
 <img src="images/app-store.webp" alt="App Store" width="100%">
 
-### Fiche d'une application
+### Fiche d'une app du Store
 
-<img src="images/app-store-fiche.webp" alt="Fiche d'une application" width="100%">
+<img src="images/app-store-fiche.webp" alt="Fiche d'une app du Store" width="100%">
 
 ### Fichiers
 
-<img src="images/fichiers.webp" alt="Fichiers" width="100%">
+<img src="images/fichiers-films.webp" alt="Fichiers" width="100%">
 
-### Fichiers : dossier Films
+### Conteneurs
 
-<img src="images/fichiers-films.webp" alt="Fichiers : dossier Films" width="100%">
-
-### Conteneurs Docker
-
-<img src="images/conteneurs.webp" alt="Conteneurs Docker" width="100%">
+<img src="images/conteneurs.webp" alt="Conteneurs" width="100%">
 
 ### Terminal web
 
@@ -71,41 +111,21 @@ Sur un Raspberry Pi, le modèle, la température et le bridage s'affichent aussi
 
 <img src="images/2fa-qr-code.webp" alt="Double authentification : QR code" width="100%">
 
-### Double authentification : codes de secours
+### Notifications
 
-<img src="images/2fa-codes-secours.webp" alt="Double authentification : codes de secours" width="100%">
+<img src="images/notifications.webp" alt="Notifications" width="100%">
 
-### HTTPS local
+### Notifications sur le téléphone (ntfy)
 
-<img src="images/https-local.webp" alt="HTTPS local" width="100%">
-
-### Notifications : la cloche
-
-<img src="images/notifications-cloche.webp" alt="Notifications : la cloche" width="100%">
-
-### Notifications : ce qui est surveillé
-
-<img src="images/notifications-alertes.webp" alt="Notifications : ce qui est surveillé" width="100%">
-
-### Notifications : sur le téléphone
-
-<img src="images/notifications-telephone.webp" alt="Notifications : sur le téléphone" width="100%">
+<img src="images/notifications-telephone.webp" alt="Notifications sur le téléphone (ntfy)" width="100%">
 
 ### Utilisateurs
 
 <img src="images/utilisateurs.webp" alt="Utilisateurs" width="100%">
 
-### Ajout d'un utilisateur et de ses permissions
-
-<img src="images/utilisateur-ajout.webp" alt="Ajout d'un utilisateur et de ses permissions" width="100%">
-
 ### Sauvegardes
 
 <img src="images/sauvegardes.webp" alt="Sauvegardes" width="100%">
-
-### Sauvegardes automatiques
-
-<img src="images/sauvegardes-automatiques.webp" alt="Sauvegardes automatiques" width="100%">
 
 ### Planifier une sauvegarde
 
@@ -119,32 +139,21 @@ Sur un Raspberry Pi, le modèle, la température et le bridage s'affichent aussi
 
 <img src="images/journal.webp" alt="Journal" width="100%">
 
-### Réglages
+## In English
 
-<img src="images/reglages.webp" alt="Réglages" width="100%">
+### English: desktop
 
-### Thème clair
+<img src="images/english-bureau.webp" alt="English: desktop" width="100%">
 
-<img src="images/theme-clair.webp" alt="Thème clair" width="100%">
+### English: App Store
 
-### Thème clair : App Store
+<img src="images/english-store.webp" alt="English: App Store" width="100%">
 
-<img src="images/theme-clair-store.webp" alt="Thème clair : App Store" width="100%">
+## Sur téléphone
 
-### English : tableau de bord
-
-<img src="images/english-dashboard.webp" alt="English : tableau de bord" width="100%">
-
-### English : App Store
-
-<img src="images/english-store.webp" alt="English : App Store" width="100%">
-
-### Sur mobile
-
-<p align="center">
-  <img src="images/mobile-accueil.webp" width="19%" alt="Mobile : accueil">
-  <img src="images/mobile-applications.webp" width="19%" alt="Mobile : applications">
-  <img src="images/mobile-menu.webp" width="19%" alt="Mobile : menu">
-  <img src="images/mobile-store.webp" width="19%" alt="Mobile : App Store">
-  <img src="images/mobile-terminal.webp" width="19%" alt="Mobile : terminal">
+<p>
+  <img src="images/mobile-bureau.webp" alt="Mobile : Bureau" width="24%">
+  <img src="images/mobile-applications.webp" alt="Mobile : Applications" width="24%">
+  <img src="images/mobile-lanceur.webp" alt="Mobile : Lanceur" width="24%">
+  <img src="images/mobile-terminal.webp" alt="Mobile : Terminal" width="24%">
 </p>

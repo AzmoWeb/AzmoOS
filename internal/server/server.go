@@ -119,6 +119,7 @@ func (s *Server) Handler() http.Handler {
 	s.routesNetwork(handle)
 	s.routesAdmin(handle)
 	s.routesV3(handle)
+	s.routesWallpaper(handle)
 	mux.Handle("/api/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		fail(w, 404, errors.New("route inconnue"))
 	}))

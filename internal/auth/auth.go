@@ -79,13 +79,14 @@ type PublicUser struct {
 	Created      int64    `json:"created"`
 	LastSeen     int64    `json:"lastSeen"`
 	Lang         string   `json:"lang"`
+	Wallpaper    string   `json:"wallpaper"`
 	TOTP         bool     `json:"totp"`
 	RecoveryLeft int      `json:"recoveryLeft"`
 }
 
 func public(u *config.User) PublicUser {
 	p := PublicUser{Username: u.Username, Display: u.Display, Role: u.Role, Perms: u.Perms, Created: u.Created, LastSeen: u.LastSeen,
-		Lang: u.Lang, TOTP: u.TOTPSecret != "", RecoveryLeft: len(u.Recovery)}
+		Lang: u.Lang, Wallpaper: u.Wallpaper, TOTP: u.TOTPSecret != "", RecoveryLeft: len(u.Recovery)}
 	if p.Display == "" {
 		p.Display = u.Username
 	}
@@ -523,6 +524,21 @@ func (a *Auth) SetLang(username, lang string) error {
 	return a.cfg.Update(func(c *config.Config) error {
 		if u := c.FindUser(username); u != nil {
 			u.Lang = lang
+		}
+		return nil
+	})
+}
+
+var wallpaperRe = regexp.MustCompile(`^[a-z0-9-]{1,32}$`)
+
+// SetWallpaper enregistre le fond d'écran choisi (préréglage ou « custom »).
+func (a *Auth) SetWallpaper(username, id string) error {
+	if !wallpaperRe.MatchString(id) {
+		return errors.New("fond d'écran invalide")
+	}
+	return a.cfg.Update(func(c *config.Config) error {
+		if u := c.FindUser(username); u != nil {
+			u.Wallpaper = id
 		}
 		return nil
 	})

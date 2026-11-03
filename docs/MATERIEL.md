@@ -17,7 +17,7 @@ Azmo OS détecte automatiquement ton Raspberry Pi au démarrage et adapte son co
 
 ## Ce que fait la détection
 
-- **Modèle** : lu dans `/proc/device-tree/model`, affiché dans le tableau de bord et l'assistant.
+- **Modèle** : lu dans `/proc/device-tree/model`, affiché sur le bureau et dans l'assistant.
 - **Profil** :
   - *Léger* (< 1,5 Go) : rafraîchissement de l'interface toutes les 6 s, apps gourmandes **bloquées**
     (on peut forcer l'installation en connaissance de cause).

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { User as UserIcon, KeyRound, Cpu, Power, RotateCw, Clock, Heart, Languages } from "lucide-react";
 import { lang, languages, setLang } from "../lib/i18n";
+import { WallpaperPicker } from "./WallpaperPicker";
 import { api } from "../api/client";
 import type { SystemStats } from "../api/types";
 import { usePoll } from "../hooks/usePoll";
@@ -38,6 +39,7 @@ export function Settings() {
   return (
     <>
       <PageHead title={t("Réglages")} sub={t("Ton profil et les réglages généraux de ton Pi.")} />
+      <div style={{ marginBottom: 18 }}><WallpaperPicker /></div>
       <div className="grid grid-2">
         <Card title={t("Mon profil")} icon={<UserIcon />}>
           <div className="row" style={{ marginBottom: 18, gap: 14 }}><Avatar name={display || user.display} size={54} /><div><b>{user.display}</b><div className="muted small">@{user.username} · {user.role === "admin" ? t("Administrateur") : t("Membre")}</div></div></div>

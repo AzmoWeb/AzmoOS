@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { Link } from "react-router-dom";
 import { MoreVertical, ExternalLink, Play, Square, RotateCw, Download, ScrollText, Code2, Trash2, Plus, Store, Info, Cpu, MemoryStick, Network, FolderTree } from "lucide-react";
 import { api, q } from "../api/client";
@@ -22,7 +22,7 @@ const stateMood = { running: "good", partial: "warn", stopped: "bad", unknown: u
 const stateLabel = { running: t("En marche"), partial: t("Partiellement démarrée"), stopped: t("Arrêtée"), unknown: t("État inconnu") };
 
 /** Grille des apps installées, partagée avec l'accueil. */
-export function AppGrid({ data, reload }: { data: AppsResponse; reload: () => void }) {
+export function AppGrid({ data, reload, extra }: { data: AppsResponse; reload: () => void; extra?: ReactNode }) {
   const { can } = useSession();
   const { running, kick, onDone, jobs } = useJobs();
   const { toast, confirm } = useUI();
@@ -80,6 +80,7 @@ export function AppGrid({ data, reload }: { data: AppsResponse; reload: () => vo
             </div>
           );
         })}
+        {extra}
       </div>
       {menu.node}
       {detail && <AppDetails app={detail} onClose={() => setDetail(null)} reload={reload} />}

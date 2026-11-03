@@ -6,7 +6,7 @@ import { JobsProvider, SessionProvider, useSession } from "./session";
 import { Layout } from "./components/Layout";
 import { Loading, ErrorBox } from "./components/ui";
 import { Login, Setup } from "./pages/Auth";
-import { Dashboard } from "./pages/Dashboard";
+import { Desktop } from "./pages/Desktop";
 import { Apps } from "./pages/Apps";
 import { StorePage } from "./pages/Store";
 import { Containers } from "./pages/Containers";
@@ -23,6 +23,12 @@ import { Settings } from "./pages/Settings";
 const TerminalPage = lazy(() => import("./pages/Terminal").then((m) => ({ default: m.TerminalPage })));
 import { NotificationsPage } from "./pages/NotificationsPage";
 import { adoptAccountLang } from "./lib/i18n";
+import { wallpaperById } from "./lib/wallpapers";
+
+/** Fond d'écran Azmo des écrans affichés avant la connexion. */
+function AuthBackdrop() {
+  return <><div className="wallpaper" style={{ background: wallpaperById("azmo")!.css }} aria-hidden /><div className="wallpaper-veil" aria-hidden /></>;
+}
 import { t } from "./lib/i18n";
 
 function Guard({ perm, children }: { perm: Perm; children: ReactElement }) {
@@ -50,8 +56,8 @@ export function App() {
 
   if (error && !status) return <div className="auth"><div style={{ width: "min(460px,100%)" }}><ErrorBox error={error} onRetry={refresh} /></div></div>;
   if (!status) return <div className="auth"><Loading label={t("Connexion à ton Pi…")} /></div>;
-  if (setupMode) return <Setup status={status} onDone={async () => { setSetupMode(false); await refresh(); }} />;
-  if (!status.authenticated) return <Login status={status} onDone={refresh} />;
+  if (setupMode) return <><AuthBackdrop /><Setup status={status} onDone={async () => { setSetupMode(false); await refresh(); }} /></>;
+  if (!status.authenticated) return <><AuthBackdrop /><Login status={status} onDone={refresh} /></>;
 
   return (
     <SessionProvider status={status} refresh={refresh}>
@@ -59,7 +65,7 @@ export function App() {
         <BrowserRouter>
           <Routes>
             <Route element={<Layout />}>
-              <Route index element={<Dashboard />} />
+              <Route index element={<Desktop />} />
               <Route path="apps" element={<Apps />} />
               <Route path="store" element={<Guard perm="apps.manage"><StorePage /></Guard>} />
               <Route path="containers" element={<Guard perm="apps.manage"><Containers /></Guard>} />

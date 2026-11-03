@@ -26,6 +26,8 @@ type User struct {
 	Created  int64    `json:"created"`
 	LastSeen int64    `json:"lastSeen,omitempty"`
 	Lang     string   `json:"lang,omitempty"`
+	// Fond d'écran du bureau : identifiant d'un préréglage, ou « custom » (image envoyée).
+	Wallpaper string `json:"wallpaper,omitempty"`
 
 	// Double authentification (TOTP)
 	TOTPSecret   string   `json:"totpSecret,omitempty"`

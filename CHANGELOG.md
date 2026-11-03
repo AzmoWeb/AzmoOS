@@ -2,6 +2,10 @@
 
 ## v0.3.0 — « Sérénité »
 
+- **Nouvelle interface « bureau »** : fond d'écran (8 fonds Azmo ou ta propre photo), barre du haut en verre dépoli
+  avec recherche instantanée (`/` ou Ctrl+K), lanceur de sections, widgets (horloge, santé, jauges, stockage, réseau),
+  grandes icônes d'applications, et chaque section qui s'ouvre comme une fenêtre par-dessus le bureau.
+
 - **Terminal web** : la ligne de commande dans le navigateur (PTY + WebSocket implémentés sans dépendance),
   barre de touches pour mobile, réservé aux administrateurs, désactivable, chaque session journalisée.
 - **Double authentification (TOTP)** : QR code, 8 codes de secours à usage unique, protection contre la réutilisation

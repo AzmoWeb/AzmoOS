@@ -143,5 +143,5 @@ Docker, tes applications et `/DATA` sont conservés.
 | `azmoos.local` ne s'ouvre pas | Utilise l'adresse IP (visible dans l'interface de ta box). Sur Windows ancien, installe *Bonjour*. |
 | « Le port 80 est déjà utilisé » | Un autre serveur web tourne (Apache, nginx, Pi-hole…). Modifie `-addr :8080` dans `/etc/systemd/system/azmoos.service`. |
 | Une app ne s'installe pas | Ouvre sa fiche : Azmo OS explique l'erreur en clair et propose de réessayer. |
-| Ton Pi chauffe / ralentit | Le tableau de bord le signale. Ajoute un ventilateur ou un dissipateur. |
+| Ton Pi chauffe / ralentit | Le bureau le signale (et une notification te prévient). Ajoute un ventilateur ou un dissipateur. |
 | Docker Hub « 429 Too Many Requests » | Limite de téléchargements atteinte, réessaie plus tard. |

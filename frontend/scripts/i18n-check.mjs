@@ -41,6 +41,9 @@ for (const file of walk(path.join(repo, "internal"), /\.go$/).concat(walk(path.j
   if (file.endsWith("_test.go")) continue;
   const code = fs.readFileSync(file, "utf8");
   for (const m of code.matchAll(/(?:errString|errors\.New)\("((?:[^"\\]|\\.)+)"\)/g)) server.add(JSON.parse(`"${m[1]}"`));
+  // Messages du journal choisis dans une table : map[bool]string{true: "…", false: "…"}[x]
+  for (const m of code.matchAll(/map\[(?:bool|string)\]string\{([^}]*)\}\[/g))
+    for (const v of m[1].matchAll(/:\s*"((?:[^"\\]|\\.)+)"/g)) if (v[1].length > 3 && v[1].trim() === v[1]) server.add(JSON.parse(`"${v[1]}"`));
   // Messages fixes du journal (s.log / Events.Add avec un texte littéral)
   for (const m of code.matchAll(/(?:s\.log\(r, events\.\w+, "\w+", |(?:Events|evlog)\.Add\(events\.\w+, "\w+", [^,]+, [^,]+, )"((?:[^"\\]|\\.)+)"\)/g)) server.add(JSON.parse(`"${m[1]}"`));
 }
@@ -58,7 +61,8 @@ const unused = Object.keys(dict).filter((k) => !keys.has(k) && !server.has(k));
 
 console.log(`Interface : ${keys.size} textes, ${missingUI.length} sans traduction`);
 console.log(`Serveur   : ${server.size} messages, ${missingServer.length} sans traduction`);
-if (unused.length) console.log(`Inutilisées : ${unused.length} traductions qui ne servent plus`);
+if (unused.length) console.log(`Inutilisées : ${unused.length} traductions non référencées dans le code (normal pour les textes dynamiques : catégories, messages d'accès…)`);
+if (process.argv.includes("--unused")) console.log(JSON.stringify(unused, null, 1));
 const list = process.argv.includes("--list") || process.argv.includes("--json");
 if (process.argv.includes("--json")) {
   fs.writeFileSync(process.argv[process.argv.indexOf("--json") + 1], JSON.stringify({ ui: missingUI, server: missingServer }, null, 1));

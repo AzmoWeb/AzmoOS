@@ -1,6 +1,8 @@
 package server
 
 import (
+	"bytes"
+	"mime/multipart"
 	"net/http"
 	"strings"
 	"testing"
@@ -120,4 +122,45 @@ func TestNotificationsAndSettings(t *testing.T) {
 		t.Fatalf("certificat de l'autorité : %d %s", res.StatusCode, res.Header.Get("Content-Type"))
 	}
 	res.Body.Close()
+}
+
+func TestWallpaperUpload(t *testing.T) {
+	ts := newTestServer(t)
+	defer ts.Close()
+	a := newClient(t, ts)
+	a.do("POST", "/api/setup", map[string]string{"username": "azmo", "password": "motdepasse1"}, true)
+	upload := func(data []byte) int {
+		var buf bytes.Buffer
+		mw := multipart.NewWriter(&buf)
+		fw, _ := mw.CreateFormFile("file", "fond.jpg")
+		fw.Write(data)
+		mw.Close()
+		req, _ := http.NewRequest("POST", ts.URL+"/api/me/wallpaper", &buf)
+		req.Header.Set("Content-Type", mw.FormDataContentType())
+		req.Header.Set("X-Requested-With", "AzmoOS")
+		res, err := a.hc.Do(req)
+		if err != nil {
+			t.Fatal(err)
+		}
+		res.Body.Close()
+		return res.StatusCode
+	}
+	// Un faux « .jpg » qui est en réalité du HTML est refusé.
+	if code := upload([]byte("<html><script>alert(1)</script></html>")); code != 400 {
+		t.Fatalf("fichier non image accepté : %d", code)
+	}
+	png := []byte("\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR\x00\x00\x00\x01\x00\x00\x00\x01\x08\x02\x00\x00\x00")
+	if code := upload(png); code != 200 {
+		t.Fatalf("PNG refusé : %d", code)
+	}
+	_, me := a.do("GET", "/api/me", nil, false)
+	if me["user"].(map[string]any)["wallpaper"] != "custom" {
+		t.Fatalf("fond personnel non enregistré : %v", me["user"])
+	}
+	if code, _ := a.do("POST", "/api/me/wallpaper/preset", map[string]string{"id": "../../etc"}, true); code != 400 {
+		t.Fatalf("identifiant de fond invalide accepté : %d", code)
+	}
+	if code, _ := a.do("POST", "/api/me/wallpaper/preset", map[string]string{"id": "ocean"}, true); code != 200 {
+		t.Fatalf("préréglage refusé : %d", code)
+	}
 }

@@ -22,7 +22,7 @@ Films, photos, fichiers, domotique, VPN, NAS… pilotés depuis une interface we
 
 <br>
 
-<img src="docs/images/tableau-de-bord.webp" alt="Tableau de bord d'Azmo OS" width="100%">
+<img src="docs/images/bureau.webp" alt="Le bureau d'Azmo OS" width="100%">
 
 </div>
 
@@ -135,48 +135,68 @@ Toutes les options et le dépannage : **[docs/INSTALLATION.md](docs/INSTALLATION
 
 ## 👀 Aperçu
 
+### Un vrai bureau pour ton serveur
+
+Widgets en verre dépoli (horloge, santé du Pi, jauges, stockage, réseau), grandes icônes d'applications,
+recherche instantanée, lanceur de sections, et chaque outil qui s'ouvre comme une fenêtre par-dessus ton fond d'écran.
+
 | | |
 |:---:|:---:|
-| <img src="docs/images/assistant-1-bienvenue.webp" alt="Assistant de premier démarrage"> | <img src="docs/images/connexion.webp" alt="Connexion"> |
-| **Assistant de premier démarrage** | **Connexion** |
+| <img src="docs/images/lanceur.webp" alt="Lanceur de sections"> | <img src="docs/images/recherche.webp" alt="Recherche instantanée"> |
+| **Lanceur** : toutes les sections en un clic | **Recherche** : apps, sections, App Store (touche `/`) |
+| <img src="docs/images/menu-application.webp" alt="Menu d'une application"> | <img src="docs/images/details-application.webp" alt="Détails d'une application"> |
+| **Clic droit… ou ⋮** : ouvrir, arrêter, mettre à jour | **Ressources, ports, volumes, journaux** |
+
+### Choisis ton fond d'écran
+
+8 fonds Azmo, ou ta propre photo. Le thème clair et le thème sombre s'adaptent automatiquement.
+
+| | | |
+|:---:|:---:|:---:|
+| <img src="docs/images/bureau-ocean.webp" alt="Fond Océan"> | <img src="docs/images/bureau-crepuscule.webp" alt="Fond Crépuscule"> | <img src="docs/images/bureau-nuit.webp" alt="Fond Nuit étoilée"> |
+| **Océan** | **Crépuscule** | **Nuit étoilée** |
+| <img src="docs/images/bureau-aube.webp" alt="Fond Aube"> | <img src="docs/images/theme-clair.webp" alt="Thème clair"> | <img src="docs/images/reglages.webp" alt="Choix du fond d'écran"> |
+| **Aube** | **Thème clair** | **Réglages → Fond d'écran** |
+
+### Toutes les fonctionnalités
+
+| | |
+|:---:|:---:|
 | <img src="docs/images/app-store.webp" alt="App Store"> | <img src="docs/images/app-store-fiche.webp" alt="Fiche d'une application"> |
 | **App Store** : 25 applications prêtes à l'emploi | **Fiche d'une app** : mémoire conseillée, conseils, configuration |
-| <img src="docs/images/mes-applications.webp" alt="Mes applications"> | <img src="docs/images/details-application.webp" alt="Détails d'une application"> |
-| **Mes applications** | **Ressources, ports, volumes, journaux** |
-| <img src="docs/images/fichiers-films.webp" alt="Fichiers"> | <img src="docs/images/conteneurs.webp" alt="Conteneurs"> |
-| **Fichiers** : glisser-déposer, aperçu, raccourcis | **Conteneurs, images et volumes Docker** |
-| <img src="docs/images/utilisateurs.webp" alt="Utilisateurs"> | <img src="docs/images/securite.webp" alt="Sécurité"> |
-| **Utilisateurs et permissions** | **Sécurité** : pare-feu, SSH, sessions |
-| <img src="docs/images/journal.webp" alt="Journal"> | <img src="docs/images/sauvegardes.webp" alt="Sauvegardes"> |
-| **Journal des événements** | **Sauvegarde et restauration** |
-| <img src="docs/images/terminal.webp" alt="Terminal web"> | <img src="docs/images/2fa-qr-code.webp" alt="Double authentification"> |
-| **Terminal web** dans le navigateur | **Double authentification** par QR code |
+| <img src="docs/images/fichiers-films.webp" alt="Fichiers"> | <img src="docs/images/terminal.webp" alt="Terminal web"> |
+| **Fichiers** : glisser-déposer, aperçu, raccourcis | **Terminal web** dans le navigateur |
+| <img src="docs/images/securite.webp" alt="Sécurité"> | <img src="docs/images/2fa-qr-code.webp" alt="Double authentification"> |
+| **Sécurité** : pare-feu, HTTPS local, SSH, sessions | **Double authentification** par QR code |
 | <img src="docs/images/notifications-cloche.webp" alt="Notifications"> | <img src="docs/images/notifications-telephone.webp" alt="Notifications sur le téléphone"> |
-| **Notifications** dans l'interface | **Sur ton téléphone** : ntfy, Discord, Telegram |
-| <img src="docs/images/sauvegardes-automatiques.webp" alt="Sauvegardes automatiques"> | <img src="docs/images/https-local.webp" alt="HTTPS local"> |
-| **Sauvegardes automatiques** vers un disque ou le cloud | **HTTPS local** avec guide d'installation du certificat |
-| <img src="docs/images/theme-clair.webp" alt="Thème clair"> | <img src="docs/images/english-dashboard.webp" alt="Interface en anglais"> |
-| **Thème clair** | **English** : toute l'interface est traduite |
+| **Notifications** dans la cloche | **Sur ton téléphone** : ntfy, Discord, Telegram |
+| <img src="docs/images/sauvegardes.webp" alt="Sauvegardes"> | <img src="docs/images/sauvegardes-planifier.webp" alt="Planifier une sauvegarde"> |
+| **Sauvegardes** automatiques et manuelles | **Planifier** vers un disque ou le cloud |
+| <img src="docs/images/conteneurs.webp" alt="Conteneurs"> | <img src="docs/images/utilisateurs.webp" alt="Utilisateurs"> |
+| **Conteneurs, images et volumes Docker** | **Utilisateurs et permissions** |
+| <img src="docs/images/connexion.webp" alt="Connexion"> | <img src="docs/images/english-bureau.webp" alt="Interface en anglais"> |
+| **Connexion** | **English** : toute l'interface est traduite |
 
 <p align="center">
-  <img src="docs/images/mobile-accueil.webp" width="23%" alt="Accueil sur mobile">
+  <img src="docs/images/mobile-bureau.webp" width="23%" alt="Bureau sur mobile">
   <img src="docs/images/mobile-applications.webp" width="23%" alt="Applications sur mobile">
-  <img src="docs/images/mobile-menu.webp" width="23%" alt="Menu sur mobile">
+  <img src="docs/images/mobile-lanceur.webp" width="23%" alt="Lanceur sur mobile">
   <img src="docs/images/mobile-terminal.webp" width="23%" alt="Terminal sur mobile">
   <br><b>Pensé aussi pour le téléphone</b>
 </p>
 
 > Captures réalisées sur une machine de test x86 avec des données de démonstration : sur un Raspberry Pi,
-> le tableau de bord affiche le modèle (« Raspberry Pi 5 Model B »), la température et le bridage.
+> le bureau affiche le modèle (« Raspberry Pi 5 Model B »), la température et le bridage.
 > Toutes les captures : **[docs/GALERIE.md](docs/GALERIE.md)**.
 
 ---
 
 ## ✨ Fonctionnalités
 
-### 🏠 Un tableau de bord qui parle comme un humain
-L'état de ton Pi en une phrase : *« Tout roule ✨ »*, *« Il commence à faire chaud »*,
-*« Le stockage est presque plein »*. Processeur, mémoire, température, réseau et stockage en temps réel.
+### 🖥️ Un bureau, comme sur ton ordinateur
+Fond d'écran au choix (ou ta photo), widgets en verre dépoli, grandes icônes d'applications, recherche instantanée
+et sections qui s'ouvrent en fenêtres. L'état de ton Pi en une phrase : *« Tout roule ✨ »*,
+*« Il commence à faire chaud »*, avec processeur, mémoire, température, stockage et réseau en temps réel.
 
 ### 🧠 Adapté à ton matériel
 Azmo OS reconnaît ton Raspberry Pi et choisit un profil **léger**, **standard** ou **performance**.
@@ -352,7 +372,7 @@ Publier une version : `git tag v0.2.0 && git push origin v0.2.0`. GitHub Actions
 - [x] Double authentification et HTTPS local
 - [x] Notifications (température, disque plein, mises à jour…) jusque sur le téléphone
 - [x] Interface en anglais
-- [ ] Widgets personnalisables sur le tableau de bord
+- [ ] Widgets personnalisables sur le bureau
 - [ ] Mises à jour automatiques des applications
 - [ ] Catalogue d'applications communautaire
 - [ ] Autres langues (espagnol, allemand…) : [les contributions sont les bienvenues](docs/DEVELOPPEMENT.md#traduire-azmo-os)

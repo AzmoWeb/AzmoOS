@@ -21,7 +21,7 @@ export function StorePage() {
   const { status } = useSession();
   const cat = usePoll(() => api.get<CatalogApp[]>("/api/store/catalog"));
   const [filter, setFilter] = useState(ALL);
-  const [query, setQuery] = useState("");
+  const [query, setQuery] = useState(() => new URLSearchParams(location.search).get("q") ?? "");
   const [sel, setSel] = useState<CatalogApp | null>(null);
 
   const categories = useMemo(() => [ALL, ...new Set((cat.data ?? []).map((a) => a.category))], [cat.data]);

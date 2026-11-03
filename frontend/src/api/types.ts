@@ -10,6 +10,7 @@ export interface User {
   created: number;
   lastSeen: number;
   lang?: string;
+  wallpaper?: string;
   totp: boolean;
   recoveryLeft: number;
 }

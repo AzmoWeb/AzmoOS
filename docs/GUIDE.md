@@ -1,10 +1,21 @@
 # Guide d'utilisation
 
-## Le tableau de bord
+## Le bureau
 
-La page d'accueil te dit en une phrase comment va ton Pi : *« Tout roule »*, *« Il commence à
-faire chaud »*, *« Le stockage est presque plein »*… En dessous : processeur, mémoire,
-température, réseau et stockage en temps réel, puis tes applications.
+En te connectant, tu arrives sur ton **bureau** :
+
+- **à gauche**, les widgets : l'heure, l'état de ton Pi en une phrase (*« Tout roule ✨ »*, *« Il commence à faire chaud »*…),
+  les jauges du processeur et de la mémoire, la température, le stockage et le réseau ;
+- **à droite**, tes applications sous forme de grandes icônes : un clic ouvre l'application, le bouton **⋮** (au survol)
+  propose arrêter, redémarrer, mettre à jour, journaux… La pastille verte ou rouge indique si elle tourne ;
+- **en haut**, la barre de recherche (raccourci `/` ou `Ctrl+K`) trouve une app, une section ou une app de l'App Store ;
+  le bouton ▦ ouvre le **lanceur** avec toutes les sections ; la cloche 🔔 affiche les notifications ; ton avatar
+  donne accès aux réglages, au fond d'écran, au thème et à la déconnexion.
+
+Chaque section (Fichiers, App Store, Sécurité…) s'ouvre comme une **fenêtre** par-dessus le bureau : « ‹ Bureau » ou ✕ pour revenir.
+
+**Changer le fond d'écran** : avatar → *Fond d'écran*, puis choisis un des 8 fonds Azmo ou envoie ta propre photo
+(JPEG, PNG ou WebP, 12 Mo maximum). Ton choix suit ton compte sur tous tes appareils.
 
 ## Installer une application
 
@@ -68,7 +79,7 @@ Le disque système ne peut jamais être formaté ni éjecté.
 ## Utilisateurs
 
 Ajoute ta famille ou tes colocs. Un **administrateur** a tous les droits ; un **membre** voit le
-tableau de bord et ses apps, et peut recevoir ces permissions :
+bureau et ses apps, et peut recevoir ces permissions :
 
 | Permission | Effet |
 |---|---|
