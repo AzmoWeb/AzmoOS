@@ -12,5 +12,11 @@
   "tagline": "Streaming de votre musique",
   "description": "Serveur de musique compatible Subsonic, léger et rapide.",
   "compose": "services:\n  navidrome:\n    image: deluan/navidrome:latest\n    container_name: navidrome\n    restart: unless-stopped\n    user: \"{{PUID}}:{{PGID}}\"\n    ports:\n      - \"4533:4533\"\n    volumes:\n      - {{APPDATA}}/data:/data\n      - {{DATA}}/Media/Music:/music:ro\n",
-  "minRam": 256
+  "minRam": 256,
+  "i18n": {
+    "en": {
+      "tagline": "Stream your music",
+      "description": "Subsonic-compatible music server, light and fast."
+    }
+  }
 }

@@ -29,6 +29,9 @@ func TestCatalogIsValid(t *testing.T) {
 		if !strings.Contains(a.Compose, "services:") || strings.Contains(a.Compose, "{{") {
 			t.Errorf("%s : compose invalide ou variable non remplacée", a.ID)
 		}
+		if en := a.I18n["en"]; en["tagline"] == "" || en["description"] == "" || (a.Notes != "" && en["notes"] == "") {
+			t.Errorf("%s : traduction anglaise incomplète", a.ID)
+		}
 		if len(a.Arch) == 0 {
 			t.Errorf("%s : architectures non déclarées", a.ID)
 		}

@@ -18,6 +18,8 @@ const userUsage = `Gestion des comptes Azmo OS (à lancer avec sudo).
                                            crée un compte (admin par défaut)
   azmod user passwd <nom>                  change le mot de passe
   azmod user delete <nom>                  supprime un compte
+  azmod user 2fa-off <nom>                 désactive la double authentification
+                                           (téléphone perdu)
 
 Le mot de passe est demandé au clavier, ou lu sur l'entrée standard :
   echo 'MotDePasse' | sudo azmod user add azmo
@@ -69,7 +71,11 @@ func runUser(args []string) int {
 			if u.Role == config.RoleAdmin {
 				role = "administrateur"
 			}
-			fmt.Printf("  %-20s %-24s %s\n", u.Username, u.Display, role)
+			tfa := ""
+			if u.TOTP {
+				tfa = "  🔐 2FA"
+			}
+			fmt.Printf("  %-20s %-24s %s%s\n", u.Username, u.Display, role, tfa)
 		}
 		return 0
 	case "add", "create":
@@ -105,6 +111,15 @@ func runUser(args []string) int {
 			return fail("%v", err)
 		}
 		fmt.Printf("✔ Mot de passe de « %s » changé. Ses sessions ont été fermées.\n", name)
+		return 0
+	case "2fa-off", "totp-off":
+		if name == "" {
+			return fail("indique le compte : azmod user 2fa-off <nom>")
+		}
+		if err := a.DisableTOTP(name); err != nil {
+			return fail("%v", err)
+		}
+		fmt.Printf("✔ Double authentification désactivée pour « %s ». Elle pourra la réactiver dans Sécurité.\n", name)
 		return 0
 	case "delete", "rm":
 		if name == "" {

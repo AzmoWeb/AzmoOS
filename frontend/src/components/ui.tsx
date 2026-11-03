@@ -1,7 +1,8 @@
-import { type ReactNode, type ButtonHTMLAttributes, type InputHTMLAttributes, useState } from "react";
+import { type ReactNode, type ButtonHTMLAttributes, type InputHTMLAttributes, forwardRef, useState } from "react";
 import { Info, AlertTriangle, XCircle, CheckCircle2, Search as SearchIcon } from "lucide-react";
 import type { Mood } from "../lib/human";
 import { avatarHue } from "../lib/human";
+import { t } from "../lib/i18n";
 
 type BtnProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   variant?: "primary" | "ghost" | "danger" | "danger-solid";
@@ -21,13 +22,13 @@ export function Button({ variant, size, block, loading, icon, className = "", ch
   );
 }
 
-export function IconButton({ label, children, ...rest }: ButtonHTMLAttributes<HTMLButtonElement> & { label: string }) {
+export const IconButton = forwardRef<HTMLButtonElement, ButtonHTMLAttributes<HTMLButtonElement> & { label: string }>(function IconButton({ label, children, ...rest }, ref) {
   return (
-    <button className="icon-btn" aria-label={label} title={label} {...rest}>
+    <button ref={ref} className="icon-btn" aria-label={label} title={label} {...rest}>
       {children}
     </button>
   );
-}
+});
 
 export function Card({ title, icon, right, sub, children, className = "", flat, pad0 }: {
   title?: ReactNode; icon?: ReactNode; right?: ReactNode; sub?: ReactNode; children?: ReactNode; className?: string; flat?: boolean; pad0?: boolean;
@@ -95,7 +96,7 @@ export function PasswordInput(props: InputHTMLAttributes<HTMLInputElement>) {
     <div style={{ position: "relative" }}>
       <input className="input" {...props} type={show ? "text" : "password"} style={{ paddingRight: 84 }} />
       <button type="button" className="btn ghost sm" style={{ position: "absolute", right: 6, top: 6 }} onClick={() => setShow(!show)}>
-        {show ? "Masquer" : "Afficher"}
+        {show ? t("Masquer") : t("Afficher")}
       </button>
     </div>
   );
@@ -109,7 +110,7 @@ export function PasswordMeter({ value }: { value: string }) {
   if (/[A-Z]/.test(value) && /[a-z]/.test(value)) score++;
   if (/\d/.test(value) && /[^A-Za-z0-9]/.test(value)) score++;
   const colors = ["var(--bad)", "var(--warn)", "var(--warn)", "var(--good)", "var(--good)"];
-  const labels = ["Trop court", "Faible", "Correct", "Bon", "Excellent"];
+  const labels = [t("Trop court"), t("Faible"), t("Correct"), t("Bon"), t("Excellent")];
   return (
     <>
       <div className="pw-meter">{[0, 1, 2, 3].map((i) => <i key={i} style={{ background: i < score ? colors[score] : undefined }} />)}</div>
@@ -122,7 +123,7 @@ export function Search({ value, onChange, placeholder }: { value: string; onChan
   return (
     <div className="search">
       <SearchIcon />
-      <input className="input" value={value} onChange={(e) => onChange(e.target.value)} placeholder={placeholder ?? "Rechercher…"} />
+      <input className="input" value={value} onChange={(e) => onChange(e.target.value)} placeholder={placeholder ?? t("Rechercher…")} />
     </div>
   );
 }
@@ -148,9 +149,9 @@ export function ToggleRow({ title, desc, checked, onChange, disabled }: { title:
 export function Tabs<T extends string>({ tabs, value, onChange }: { tabs: { id: T; label: string; icon?: ReactNode }[]; value: T; onChange: (v: T) => void }) {
   return (
     <div className="tabs" role="tablist">
-      {tabs.map((t) => (
-        <button key={t.id} role="tab" aria-selected={value === t.id} className={`tab ${value === t.id ? "active" : ""}`} onClick={() => onChange(t.id)}>
-          {t.icon}{t.label}
+      {tabs.map((tab) => (
+        <button key={tab.id} role="tab" aria-selected={value === tab.id} className={`tab ${value === tab.id ? "active" : ""}`} onClick={() => onChange(tab.id)}>
+          {tab.icon}{tab.label}
         </button>
       ))}
     </div>
@@ -161,7 +162,7 @@ export function Spinner({ small }: { small?: boolean }) {
   return <span className={`spinner ${small ? "sm" : ""}`} />;
 }
 
-export function Loading({ label = "Chargement…" }: { label?: string }) {
+export function Loading({ label = t("Chargement…") }: { label?: string }) {
   return (
     <div className="center">
       <div className="row muted"><Spinner /> {label}</div>
@@ -193,7 +194,7 @@ export function Callout({ mood, children, title }: { mood?: Mood | "info"; child
 export function ErrorBox({ error, onRetry }: { error: string; onRetry?: () => void }) {
   return (
     <Card>
-      <Empty emoji="😕" title="Oups, ça n'a pas marché" action={onRetry && <Button onClick={onRetry}>Réessayer</Button>}>
+      <Empty emoji="😕" title={t("Oups, ça n'a pas marché")} action={onRetry && <Button onClick={onRetry}>{t("Réessayer")}</Button>}>
         {error}
       </Empty>
     </Card>

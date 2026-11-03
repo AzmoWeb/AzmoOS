@@ -72,7 +72,7 @@ curl -fsSL https://raw.githubusercontent.com/AzmoWeb/AzmoOS/main/scripts/install
 
 Le script :
 1. détecte ton matériel (modèle, processeur, mémoire, place libre) ;
-2. installe Docker, avahi (`.local`), Samba, ufw et les outils disques ;
+2. installe Docker, avahi (`.local`), Samba, ufw, rclone et les outils disques ;
 3. télécharge le binaire Azmo OS **vérifié par SHA-256** et l'interface ;
 4. te demande ton nom, ton nom d'utilisateur, ton mot de passe et le nom du Pi ;
 5. installe et démarre les services `azmoos` et `azmoos-hotspot`.
@@ -109,6 +109,7 @@ sudo azmod user add camille --member     # ajoute un membre (le mot de passe est
 sudo azmod user add azmo2                # ajoute un administrateur
 sudo azmod user passwd azmo              # change un mot de passe
 sudo azmod user delete camille           # supprime un compte
+sudo azmod user 2fa-off azmo             # désactive la double authentification (téléphone perdu)
 ```
 
 Les changements sont pris en compte immédiatement, sans redémarrer le service.
@@ -117,6 +118,14 @@ Les changements sont pris en compte immédiatement, sans redémarrer le service.
 
 ```bash
 sudo azmod user passwd azmo
+```
+
+## Téléphone perdu (double authentification)
+
+Utilise un de tes codes de secours, ou en SSH :
+
+```bash
+sudo azmod user 2fa-off azmo
 ```
 
 ## Désinstaller
@@ -134,5 +143,5 @@ Docker, tes applications et `/DATA` sont conservés.
 | `azmoos.local` ne s'ouvre pas | Utilise l'adresse IP (visible dans l'interface de ta box). Sur Windows ancien, installe *Bonjour*. |
 | « Le port 80 est déjà utilisé » | Un autre serveur web tourne (Apache, nginx, Pi-hole…). Modifie `-addr :8080` dans `/etc/systemd/system/azmoos.service`. |
 | Une app ne s'installe pas | Ouvre sa fiche : Azmo OS explique l'erreur en clair et propose de réessayer. |
-| Ton Pi chauffe / ralentit | Le tableau de bord le signale. Ajoute un ventilateur ou un dissipateur. |
+| Ton Pi chauffe / ralentit | Le bureau le signale (et une notification te prévient). Ajoute un ventilateur ou un dissipateur. |
 | Docker Hub « 429 Too Many Requests » | Limite de téléchargements atteinte, réessaie plus tard. |

@@ -1,10 +1,21 @@
 # Guide d'utilisation
 
-## Le tableau de bord
+## Le bureau
 
-La page d'accueil te dit en une phrase comment va ton Pi : *« Tout roule »*, *« Il commence à
-faire chaud »*, *« Le stockage est presque plein »*… En dessous : processeur, mémoire,
-température, réseau et stockage en temps réel, puis tes applications.
+En te connectant, tu arrives sur ton **bureau** :
+
+- **à gauche**, les widgets : l'heure, l'état de ton Pi en une phrase (*« Tout roule ✨ »*, *« Il commence à faire chaud »*…),
+  les jauges du processeur et de la mémoire, la température, le stockage et le réseau ;
+- **à droite**, tes applications sous forme de grandes icônes : un clic ouvre l'application, le bouton **⋮** (au survol)
+  propose arrêter, redémarrer, mettre à jour, journaux… La pastille verte ou rouge indique si elle tourne ;
+- **en haut**, la barre de recherche (raccourci `/` ou `Ctrl+K`) trouve une app, une section ou une app de l'App Store ;
+  le bouton ▦ ouvre le **lanceur** avec toutes les sections ; la cloche 🔔 affiche les notifications ; ton avatar
+  donne accès aux réglages, au fond d'écran, au thème et à la déconnexion.
+
+Chaque section (Fichiers, App Store, Sécurité…) s'ouvre comme une **fenêtre** par-dessus le bureau : « ‹ Bureau » ou ✕ pour revenir.
+
+**Changer le fond d'écran** : avatar → *Fond d'écran*, puis choisis un des 8 fonds Azmo ou envoie ta propre photo
+(JPEG, PNG ou WebP, 12 Mo maximum). Ton choix suit ton compte sur tous tes appareils.
 
 ## Installer une application
 
@@ -68,7 +79,7 @@ Le disque système ne peut jamais être formaté ni éjecté.
 ## Utilisateurs
 
 Ajoute ta famille ou tes colocs. Un **administrateur** a tous les droits ; un **membre** voit le
-tableau de bord et ses apps, et peut recevoir ces permissions :
+bureau et ses apps, et peut recevoir ces permissions :
 
 | Permission | Effet |
 |---|---|
@@ -76,7 +87,61 @@ tableau de bord et ses apps, et peut recevoir ces permissions :
 | Voir les fichiers | Parcourir et télécharger |
 | Modifier les fichiers | Envoyer, renommer, supprimer |
 
+## Terminal web
+
+*Système → Terminal* (administrateurs) : la ligne de commande de ton Pi dans le navigateur.
+Tu es connecté avec l'utilisateur principal du Pi (celui créé dans Raspberry Pi Imager) : utilise `sudo`
+pour les commandes d'administration. Sur téléphone, une barre propose Échap, Tab, Ctrl+C et les flèches.
+Le terminal peut être désactivé dans *Sécurité* ; chaque ouverture est enregistrée dans le *Journal*.
+
+## Double authentification
+
+*Sécurité → Double authentification → Activer* :
+1. installe une app d'authentification (Google Authenticator, Authy, Microsoft Authenticator, 1Password, Bitwarden) ;
+2. scanne le QR code, saisis le code à 6 chiffres ;
+3. **mets les 8 codes de secours à l'abri** (téléchargement ou papier).
+
+À chaque connexion, le code est demandé après le mot de passe. Téléphone perdu ? Utilise un code de secours,
+demande à un administrateur de réinitialiser ta double authentification (*Utilisateurs*), ou en SSH :
+`sudo azmod user 2fa-off <nom>`.
+
+## HTTPS local
+
+*Sécurité → HTTPS local → Activer le HTTPS* : l'interface est aussi disponible en `https://`.
+Pour ne plus voir l'avertissement du navigateur, **télécharge le certificat** et installe-le une fois sur chaque
+appareil (le guide pas à pas pour iPhone, Android, Windows, Mac et Linux est sur la page). Ensuite, active
+*Toujours utiliser HTTPS*. Le certificat de l'autorité ne peut servir que pour des adresses locales.
+
+## Notifications
+
+La cloche 🔔 affiche les alertes : température, alimentation, stockage, mémoire, app arrêtée ou qui plante,
+mise à jour disponible, tentatives d'intrusion, sauvegardes. *Système → Notifications* permet de choisir ce qui est
+surveillé, les seuils, et de les recevoir **sur ton téléphone** :
+
+| Service | Mise en place |
+|---|---|
+| **ntfy** (le plus simple) | Installe l'app ntfy, abonne-toi à un sujet secret, saisis-le dans Azmo OS |
+| **Discord** | Paramètres du salon → Intégrations → Webhooks → copie l'URL |
+| **Telegram** | Crée un bot avec @BotFather, récupère son jeton et ton identifiant de discussion |
+
+Le bouton *Envoyer un test* vérifie que tout fonctionne. Une alerte n'est envoyée qu'une fois tant que le problème dure.
+
 ## Sauvegardes
+
+### Sauvegardes automatiques
+
+*Sauvegardes → Planifier* : choisis la fréquence (chaque jour ou chaque semaine), l'heure, la destination et
+le nombre de sauvegardes à garder.
+
+- **Disque ou dossier** : par exemple `/Disks/MonDisque/Sauvegardes` (branche le disque et clique *Utiliser ce disque*
+  dans *Disques & partages*, puis active *Monter au démarrage*).
+- **Cloud** : Google Drive, Dropbox, OneDrive, S3, et des dizaines d'autres grâce à rclone. Ouvre le *Terminal* et lance
+  `sudo rclone config --config /etc/azmoos/rclone.conf` pour connecter ton compte, puis choisis-le dans Azmo OS.
+
+Si le Pi était éteint à l'heure prévue, la sauvegarde est faite au démarrage suivant. Le bouton 🕘 liste les sauvegardes
+présentes dans la destination et permet d'en restaurer une.
+
+### Sauvegarde manuelle
 
 **Télécharger la sauvegarde** crée un fichier `.tar.gz` avec comptes, réglages, partages et la
 configuration de chaque app (option : données internes des apps). **Restaurer** remet tout en
@@ -86,6 +151,11 @@ place et redéploie les apps. Garde une copie hors du Pi !
 
 - **Azmo OS** : vérifié automatiquement toutes les 12 h ; installation en un clic, fichier vérifié par SHA-256.
 - **Système** : mises à jour Raspberry Pi OS / Debian, avec indication quand un redémarrage est nécessaire.
+
+## Langue
+
+*Réglages → Langue* : français ou English. Le choix est enregistré dans ton compte ; au premier accès, la langue
+du navigateur est utilisée.
 
 ## Journal
 

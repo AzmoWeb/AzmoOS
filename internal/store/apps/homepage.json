@@ -12,5 +12,11 @@
   "tagline": "Page d'accueil personnalisable",
   "description": "Tableau de bord ultra-configurable pour vos services.",
   "compose": "services:\n  homepage:\n    image: ghcr.io/gethomepage/homepage:latest\n    container_name: homepage\n    restart: unless-stopped\n    environment:\n      - HOMEPAGE_ALLOWED_HOSTS=*\n    ports:\n      - \"3004:3000\"\n    volumes:\n      - {{APPDATA}}/config:/app/config\n",
-  "minRam": 256
+  "minRam": 256,
+  "i18n": {
+    "en": {
+      "tagline": "Customizable start page",
+      "description": "A highly configurable dashboard for your services."
+    }
+  }
 }

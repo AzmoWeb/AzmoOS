@@ -56,6 +56,14 @@ func (s *Server) routesAdmin(handle routeFn) {
 		s.log(r, events.Warning, "security", "Mot de passe réinitialisé pour "+r.PathValue("name"))
 		ok(w)
 	})
+	handle("DELETE /api/users/{name}/2fa", auth.PermAdmin, func(w http.ResponseWriter, r *http.Request) {
+		if err := s.Auth.DisableTOTP(r.PathValue("name")); err != nil {
+			fail(w, 400, err)
+			return
+		}
+		s.log(r, events.Warning, "security", "Double authentification réinitialisée pour "+r.PathValue("name"))
+		ok(w)
+	})
 	handle("DELETE /api/users/{name}", auth.PermAdmin, func(w http.ResponseWriter, r *http.Request) {
 		if auth.From(r.Context()).Username == r.PathValue("name") {
 			fail(w, 400, errString("tu ne peux pas supprimer ton propre compte"))

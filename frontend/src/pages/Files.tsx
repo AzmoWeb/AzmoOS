@@ -8,6 +8,7 @@ import { useSession } from "../session";
 import { useMenu, useUI } from "../components/overlay";
 import { Button, Card, Empty, Loading, PageHead, Progress } from "../components/ui";
 import { ago, bytes } from "../lib/format";
+import { t } from "../lib/i18n";
 
 const ext = (n: string) => n.split(".").pop()?.toLowerCase() ?? "";
 function FileIcon({ f }: { f: FileEntry }) {
@@ -22,13 +23,13 @@ function FileIcon({ f }: { f: FileEntry }) {
 }
 
 const shortcuts = [
-  { emoji: "🎬", label: "Films", path: "/Media/Movies" },
-  { emoji: "📺", label: "Séries", path: "/Media/TV" },
-  { emoji: "🎵", label: "Musique", path: "/Media/Music" },
-  { emoji: "📷", label: "Photos", path: "/Photos" },
-  { emoji: "📄", label: "Documents", path: "/Documents" },
-  { emoji: "⬇️", label: "Téléchargements", path: "/Downloads" },
-  { emoji: "💽", label: "Disques", path: "/Disks" },
+  { emoji: "🎬", label: t("Films"), path: "/Media/Movies" },
+  { emoji: "📺", label: t("Séries"), path: "/Media/TV" },
+  { emoji: "🎵", label: t("Musique"), path: "/Media/Music" },
+  { emoji: "📷", label: t("Photos"), path: "/Photos" },
+  { emoji: "📄", label: t("Documents"), path: "/Documents" },
+  { emoji: "⬇️", label: t("Téléchargements"), path: "/Downloads" },
+  { emoji: "💽", label: t("Disques"), path: "/Disks" },
 ];
 
 export function Files() {
@@ -60,10 +61,10 @@ export function Files() {
     xhr.upload.onprogress = (e) => e.lengthComputable && setUpload({ name: label, pct: (e.loaded / e.total) * 100 });
     xhr.onload = () => {
       setUpload(null);
-      if (xhr.status < 300) { toast(`${label} : envoyé ✨`, "good"); list.reload(); }
-      else toast(JSON.parse(xhr.responseText || "{}").error ?? "L'envoi a échoué", "bad");
+      if (xhr.status < 300) { toast(t("{0} : envoyé ✨", label), "good"); list.reload(); }
+      else toast(JSON.parse(xhr.responseText || "{}").error ?? t("L'envoi a échoué"), "bad");
     };
-    xhr.onerror = () => { setUpload(null); toast("L'envoi a été interrompu", "bad"); };
+    xhr.onerror = () => { setUpload(null); toast(t("L'envoi a été interrompu"), "bad"); };
     xhr.send(fd);
   };
 
@@ -74,16 +75,16 @@ export function Files() {
   const openMenu = (el: HTMLElement, f: FileEntry) => {
     const dl = (inline: boolean) => `/api/files/download?path=${q(f.path)}${inline ? "&inline=1" : ""}`;
     menu.open(el, [
-      ...(f.dir ? [{ label: "Ouvrir", icon: <Folder />, onClick: () => go(f.path) }] : [
-        { label: "Aperçu", icon: <Eye />, onClick: () => window.open(dl(true), "_blank", "noopener") },
-        { label: "Télécharger", icon: <Download />, onClick: () => { const a = document.createElement("a"); a.href = dl(false); a.click(); } },
+      ...(f.dir ? [{ label: t("Ouvrir"), icon: <Folder />, onClick: () => go(f.path) }] : [
+        { label: t("Aperçu"), icon: <Eye />, onClick: () => window.open(dl(true), "_blank", "noopener") },
+        { label: t("Télécharger"), icon: <Download />, onClick: () => { const a = document.createElement("a"); a.href = dl(false); a.click(); } },
       ]),
       ...(writable ? [
-        { label: "Renommer", icon: <Pencil />, onClick: async () => { const n = await prompt({ title: "Renommer", label: "Nouveau nom", value: f.name, confirm: "Renommer" }); if (n && n !== f.name) op("rename", { path: f.path, name: n }); } },
-        { label: "Déplacer vers…", icon: <FolderInput />, onClick: async () => { const to = await prompt({ title: `Déplacer « ${f.name} »`, label: "Dossier de destination", value: cur, confirm: "Déplacer", placeholder: "/Documents" }); if (to) op("move", { path: f.path, to }); } },
+        { label: t("Renommer"), icon: <Pencil />, onClick: async () => { const n = await prompt({ title: t("Renommer"), label: t("Nouveau nom"), value: f.name, confirm: t("Renommer") }); if (n && n !== f.name) op("rename", { path: f.path, name: n }); } },
+        { label: t("Déplacer vers…"), icon: <FolderInput />, onClick: async () => { const to = await prompt({ title: t("Déplacer « {0} »", f.name), label: t("Dossier de destination"), value: cur, confirm: t("Déplacer"), placeholder: "/Documents" }); if (to) op("move", { path: f.path, to }); } },
         "-" as const,
-        { label: "Supprimer", icon: <Trash2 />, danger: true, onClick: async () => {
-          if (await confirm({ title: `Supprimer « ${f.name} » ?`, danger: true, confirm: "Supprimer", body: f.dir ? "Le dossier et tout ce qu'il contient seront supprimés définitivement." : "Le fichier sera supprimé définitivement." })) op("delete", { path: f.path });
+        { label: t("Supprimer"), icon: <Trash2 />, danger: true, onClick: async () => {
+          if (await confirm({ title: t("Supprimer « {0} » ?", f.name), danger: true, confirm: t("Supprimer"), body: f.dir ? t("Le dossier et tout ce qu'il contient seront supprimés définitivement.") : t("Le fichier sera supprimé définitivement.") })) op("delete", { path: f.path });
         } },
       ] : []),
     ]);
@@ -93,10 +94,10 @@ export function Files() {
 
   return (
     <>
-      <PageHead title="Fichiers" sub="Tout ce qui est stocké sur ton Pi, dans /DATA. Glisse-dépose des fichiers ici pour les envoyer."
+      <PageHead title={t("Fichiers")} sub={t("Tout ce qui est stocké sur ton Pi, dans /DATA. Glisse-dépose des fichiers ici pour les envoyer.")}
         actions={writable && <>
-          <Button icon={<FolderPlus />} onClick={async () => { const n = await prompt({ title: "Nouveau dossier", label: "Nom du dossier", confirm: "Créer" }); if (n) op("mkdir", { path: cur, name: n }); }}>Nouveau dossier</Button>
-          <Button variant="primary" icon={<Upload />} onClick={() => input.current?.click()}>Envoyer</Button>
+          <Button icon={<FolderPlus />} onClick={async () => { const n = await prompt({ title: t("Nouveau dossier"), label: t("Nom du dossier"), confirm: t("Créer") }); if (n) op("mkdir", { path: cur, name: n }); }}>{t("Nouveau dossier")}</Button>
+          <Button variant="primary" icon={<Upload />} onClick={() => input.current?.click()}>{t("Envoyer")}</Button>
           <input ref={input} type="file" multiple hidden onChange={(e) => { if (e.target.files) doUpload(e.target.files); e.target.value = ""; }} />
         </>} />
       {cur === "/" && (
@@ -104,21 +105,21 @@ export function Files() {
           {shortcuts.map((s) => <button key={s.path} onClick={() => go(s.path)}><span>{s.emoji}</span>{s.label}</button>)}
         </div>
       )}
-      {upload && <Card flat className="" ><div className="row small" style={{ marginBottom: 8 }}><Upload size={16} /> Envoi de <b>{upload.name}</b> <span className="spacer" />{upload.pct.toFixed(0)}%</div><Progress value={upload.pct} /></Card>}
+      {upload && <Card flat className="" ><div className="row small" style={{ marginBottom: 8 }}><Upload size={16} /> {t("Envoi de")} <b>{upload.name}</b> <span className="spacer" />{upload.pct.toFixed(0)}%</div><Progress value={upload.pct} /></Card>}
       <div className={`card pad-0 ${drag ? "dropzone" : ""}`} style={{ marginTop: upload ? 14 : 0 }}
         onDragOver={(e) => { e.preventDefault(); if (writable) setDrag(true); }} onDragLeave={() => setDrag(false)} onDrop={onDrop}>
         <div style={{ padding: "12px 14px", borderBottom: "1px solid var(--border)" }} className="crumbs">
-          <button onClick={() => go("/")}><Home /> DATA</button>
+          <button onClick={() => go("/")}><Home /> {"DATA"}</button>
           {parts.map((p, i) => (
             <span key={i} className="row" style={{ gap: 2 }}><ChevronRight size={14} className="muted" /><button onClick={() => go("/" + parts.slice(0, i + 1).join("/"))}>{p}</button></span>
           ))}
         </div>
-        {list.error ? <Empty emoji="🚧" title="Impossible d'ouvrir ce dossier">{list.error}</Empty> : !list.data ? <Loading /> : list.data.length === 0 ? (
-          <Empty emoji="📭" title="Ce dossier est vide">{writable ? "Glisse des fichiers ici, ou utilise le bouton Envoyer." : "Il n'y a rien ici pour le moment."}</Empty>
+        {list.error ? <Empty emoji="🚧" title={t("Impossible d'ouvrir ce dossier")}>{list.error}</Empty> : !list.data ? <Loading /> : list.data.length === 0 ? (
+          <Empty emoji="📭" title={t("Ce dossier est vide")}>{writable ? t("Glisse des fichiers ici, ou utilise le bouton Envoyer.") : t("Il n'y a rien ici pour le moment.")}</Empty>
         ) : (
           <div className="table-wrap">
             <table className="table">
-              <thead><tr><th>Nom</th><th className="hide-sm">Taille</th><th className="hide-sm">Modifié</th><th /></tr></thead>
+              <thead><tr><th>{t("Nom")}</th><th className="hide-sm">{t("Taille")}</th><th className="hide-sm">{t("Modifié")}</th><th /></tr></thead>
               <tbody>
                 {list.data.map((f) => (
                   <tr key={f.path} className="clickable" onClick={(e) => {
@@ -129,7 +130,7 @@ export function Files() {
                     <td><div className="file-name"><FileIcon f={f} />{f.name}</div></td>
                     <td className="hide-sm muted">{f.dir ? "—" : bytes(f.size)}</td>
                     <td className="hide-sm muted">{ago(new Date(f.modTime).getTime() / 1000)}</td>
-                    <td className="actions"><button className="icon-btn" aria-label="Actions"><MoreVertical /></button></td>
+                    <td className="actions"><button className="icon-btn" aria-label={t("Actions")}><MoreVertical /></button></td>
                   </tr>
                 ))}
               </tbody>

@@ -38,6 +38,8 @@ type App struct {
 	Website     string   `json:"website,omitempty"`
 	Installed   bool     `json:"installed"`
 	Custom      bool     `json:"custom,omitempty"`
+	// Traductions des textes (tagline, description, notes) par langue.
+	I18n map[string]map[string]string `json:"i18n,omitempty"`
 }
 
 type Store struct {

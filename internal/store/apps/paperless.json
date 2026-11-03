@@ -12,5 +12,12 @@
   "tagline": "Tes papiers, numérisés et classés",
   "description": "Scanne tes documents, Paperless les lit (OCR), les classe et te permet de tout retrouver en une recherche.",
   "notes": "Crée le compte admin au premier accès à l'interface.",
-  "compose": "services:\n  paperless-redis:\n    image: docker.io/library/redis:7\n    container_name: paperless_redis\n    restart: unless-stopped\n  paperless:\n    image: ghcr.io/paperless-ngx/paperless-ngx:latest\n    container_name: paperless\n    restart: unless-stopped\n    depends_on:\n      - paperless-redis\n    ports:\n      - \"8010:8000\"\n    environment:\n      - PAPERLESS_REDIS=redis://paperless-redis:6379\n      - PAPERLESS_OCR_LANGUAGE=fra\n      - PAPERLESS_TIME_ZONE={{TZ}}\n      - USERMAP_UID={{PUID}}\n      - USERMAP_GID={{PGID}}\n    volumes:\n      - {{APPDATA}}/data:/usr/src/paperless/data\n      - {{APPDATA}}/media:/usr/src/paperless/media\n      - {{DATA}}/Documents/Paperless:/usr/src/paperless/consume\n"
+  "compose": "services:\n  paperless-redis:\n    image: docker.io/library/redis:7\n    container_name: paperless_redis\n    restart: unless-stopped\n  paperless:\n    image: ghcr.io/paperless-ngx/paperless-ngx:latest\n    container_name: paperless\n    restart: unless-stopped\n    depends_on:\n      - paperless-redis\n    ports:\n      - \"8010:8000\"\n    environment:\n      - PAPERLESS_REDIS=redis://paperless-redis:6379\n      - PAPERLESS_OCR_LANGUAGE=fra\n      - PAPERLESS_TIME_ZONE={{TZ}}\n      - USERMAP_UID={{PUID}}\n      - USERMAP_GID={{PGID}}\n    volumes:\n      - {{APPDATA}}/data:/usr/src/paperless/data\n      - {{APPDATA}}/media:/usr/src/paperless/media\n      - {{DATA}}/Documents/Paperless:/usr/src/paperless/consume\n",
+  "i18n": {
+    "en": {
+      "tagline": "Your paperwork, scanned and filed",
+      "description": "Scan your documents: Paperless reads them (OCR), files them and lets you find everything with one search.",
+      "notes": "Create the admin account on first access to the interface."
+    }
+  }
 }

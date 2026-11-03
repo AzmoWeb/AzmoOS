@@ -9,6 +9,10 @@ export interface User {
   perms: Perm[];
   created: number;
   lastSeen: number;
+  lang?: string;
+  wallpaper?: string;
+  totp: boolean;
+  recoveryLeft: number;
 }
 
 export interface Hardware {
@@ -96,9 +100,10 @@ export interface App {
   minRam?: number;
   installed: boolean;
   custom?: boolean;
+  i18n?: Record<string, Partial<Record<"tagline" | "description" | "notes", string>>>;
 }
 
-export interface CatalogApp extends App { compatible: boolean; warning?: string }
+export interface CatalogApp extends App { compatible: boolean; warning?: string; warnKind?: "arch" | "ram"; cpuArch?: string }
 
 export interface InstalledApp extends App {
   state: "running" | "stopped" | "partial" | "unknown";
@@ -205,3 +210,67 @@ export interface AzmoEvent {
 }
 
 export interface Session { id: string; ip: string; agent: string; expires: number; current: boolean }
+
+export interface AzmoNotification {
+  id: number;
+  time: number;
+  level: "info" | "warning" | "critical";
+  kind: string;
+  key: string;
+  title: string;
+  message: string;
+  read: boolean;
+}
+
+export interface NotifySettings {
+  lang: "fr" | "en";
+  tempWarn: number;
+  diskWarn: number;
+  memWarn: number;
+  temperature: boolean;
+  disk: boolean;
+  memory: boolean;
+  apps: boolean;
+  updates: boolean;
+  security: boolean;
+  backups: boolean;
+  pushLevel: "info" | "warning" | "critical";
+  ntfy: { enabled: boolean; server: string; topic: string; token?: string };
+  discord: { enabled: boolean; webhook: string };
+  telegram: { enabled: boolean; token: string; chatId: string };
+}
+
+export interface BackupSchedule {
+  id: string;
+  name: string;
+  enabled: boolean;
+  frequency: "daily" | "weekly";
+  hour: number;
+  weekday: number;
+  target: string;
+  appData: boolean;
+  keep: number;
+  lastRun?: number;
+  lastOk: boolean;
+  lastError?: string;
+  lastFile?: string;
+  lastSize?: number;
+  next?: number;
+}
+
+export interface SchedulesResponse {
+  schedules: BackupSchedule[];
+  rclone: { installed: boolean; remotes: string[]; config: string };
+}
+
+export interface BackupFile { name: string; size: number; time: number }
+
+export interface HTTPSInfo {
+  enabled: boolean;
+  redirect: boolean;
+  port: number;
+  secure: boolean;
+  cert: { running: boolean; caFingerprint: string; caExpires: number; names: string[]; expires: number };
+}
+
+export interface TerminalInfo { enabled: boolean; account: { name: string; home: string; shell: string; root: boolean } }

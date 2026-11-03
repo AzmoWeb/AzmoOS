@@ -4,41 +4,82 @@ import { api } from "../api/client";
 import type { Hardware, Status, WiFi } from "../api/types";
 import { Button, Field, Input, PasswordInput, PasswordMeter, Spinner, Callout, Badge } from "../components/ui";
 import { slug } from "../lib/format";
+import { profileHint, machineName } from "../lib/human";
+import { lang, languages, setLang } from "../lib/i18n";
+import { t } from "../lib/i18n";
+
+function LangPicker() {
+  return (
+    <div className="lang-pick">
+      {languages.map((l) => <button type="button" key={l.id} className={lang() === l.id ? "active" : ""} onClick={() => setLang(l.id)}>{l.flag} {l.label}</button>)}
+    </div>
+  );
+}
 
 export function Login({ status, onDone }: { status: Status; onDone: () => void }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [code, setCode] = useState("");
+  const [needCode, setNeedCode] = useState(false);
+  const [recovery, setRecovery] = useState(false);
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
 
-  const submit = async (e: FormEvent) => {
-    e.preventDefault();
+  const submit = async (e?: FormEvent) => {
+    e?.preventDefault();
     setBusy(true);
     setError("");
     try {
-      await api.post("/api/login", { username, password });
+      const r = await api.post<{ ok: boolean; totp?: boolean }>("/api/login", { username, password, code: needCode ? code : "" });
+      if (r.totp) { setNeedCode(true); setBusy(false); return; }
       onDone();
     } catch (err) {
       setError((err as Error).message);
+      if (needCode) setCode("");
       setBusy(false);
     }
   };
+
+  useEffect(() => { if (needCode && !recovery && code.length === 6 && !busy) void submit(); }, [code]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  if (needCode) return (
+    <div className="auth">
+      <form className="card auth-card" onSubmit={submit} style={{ padding: 34 }}>
+        <div style={{ fontSize: 52, textAlign: "center", lineHeight: 1, marginBottom: 14 }}>🔐</div>
+        <h1>{t("Encore une étape")}</h1>
+        <p className="lead">{recovery ? t("Saisis un de tes codes de secours.") : t("Saisis le code à 6 chiffres affiché par ton application d'authentification.")}</p>
+        <Field label={recovery ? t("Code de secours") : t("Code de vérification")}>
+          {recovery
+            ? <Input value={code} onChange={(e) => setCode(e.target.value.toUpperCase())} placeholder="XXXX-XXXX" autoFocus autoComplete="off" />
+            : <input className="input otp-input" inputMode="numeric" autoComplete="one-time-code" maxLength={6} value={code} autoFocus
+                onChange={(e) => { const v = e.target.value.replace(/\D/g, ""); setCode(v); }} />}
+        </Field>
+        <div className="form-error" role="alert">{error}</div>
+        <Button variant="primary" size="lg" block loading={busy} disabled={recovery ? code.length < 8 : code.length !== 6}>{t("Valider")}</Button>
+        <div className="row" style={{ justifyContent: "space-between", marginTop: 14 }}>
+          <button type="button" className="btn ghost sm" onClick={() => { setNeedCode(false); setCode(""); setError(""); }}><ArrowLeft /> {t("Retour")}</button>
+          <button type="button" className="btn ghost sm" onClick={() => { setRecovery(!recovery); setCode(""); setError(""); }}>{recovery ? t("Utiliser l'application") : t("Téléphone perdu ? Code de secours")}</button>
+        </div>
+      </form>
+    </div>
+  );
 
   return (
     <div className="auth">
       <form className="card auth-card" onSubmit={submit} style={{ padding: 34 }}>
         <img className="auth-logo" src="/logo.svg" alt="" />
-        <h1>Content de te revoir <span className="wave">👋</span></h1>
-        <p className="lead">Connecte-toi à <b>{status.hostname}</b> pour retrouver ton serveur.</p>
-        <Field label="Nom d'utilisateur">
+        <h1>{t("Content de te revoir")} <span className="wave">👋</span></h1>
+        <p className="lead">{t("Connecte-toi à")} <b>{status.hostname}</b> {t("pour retrouver ton serveur.")}</p>
+        <Field label={t("Nom d'utilisateur")}>
           <Input value={username} onChange={(e) => setUsername(e.target.value)} autoComplete="username" autoCapitalize="none" autoFocus required />
         </Field>
-        <Field label="Mot de passe">
+        <Field label={t("Mot de passe")}>
           <PasswordInput value={password} onChange={(e) => setPassword(e.target.value)} autoComplete="current-password" required />
         </Field>
         <div className="form-error" role="alert">{error}</div>
-        <Button variant="primary" size="lg" block loading={busy}>Se connecter</Button>
-        <div className="made-by">Azmo OS {status.version} · Made by <b>Azmo</b></div>
+        <Button variant="primary" size="lg" block loading={busy}>{t("Se connecter")}</Button>
+        <div className="made-by">{t("Azmo OS")} {status.version} {t("· Made by")} <b>Azmo</b></div>
+        <LangPicker />
       </form>
     </div>
   );
@@ -67,12 +108,12 @@ export function Setup({ status, onDone }: { status: Status; onDone: () => void }
 
   useEffect(() => { if (!touchedUser) setUsername(slug(display).replace(/-/g, "") || ""); }, [display, touchedUser]);
 
-  const steps = ["Bienvenue", "Ton compte", "Ton Pi", ...(net ? ["Wi-Fi"] : []), "C'est prêt"];
+  const steps = [t("Bienvenue"), t("Ton compte"), t("Ton Pi"), ...(net ? [t("Wi-Fi")] : []), t("C'est prêt")];
   const last = steps.length - 1;
 
   const createAccount = async (e: FormEvent) => {
     e.preventDefault();
-    if (password !== confirm) return setError("Les deux mots de passe ne sont pas identiques.");
+    if (password !== confirm) return setError(t("Les deux mots de passe ne sont pas identiques."));
     setBusy(true);
     setError("");
     try {
@@ -107,72 +148,73 @@ export function Setup({ status, onDone }: { status: Status; onDone: () => void }
   return (
     <div className="auth">
       <div className="card auth-card" style={{ padding: 34, width: "min(500px, 100%)" }}>
-        <div className="steps" aria-label={`Étape ${step + 1} sur ${steps.length}`}>{steps.map((_, i) => <i key={i} className={i <= step ? "on" : ""} />)}</div>
+        <div className="steps" aria-label={t("Étape {0} sur {1}", step + 1, steps.length)}>{steps.map((_, i) => <i key={i} className={i <= step ? "on" : ""} />)}</div>
 
         {step === 0 && (
           <div className="page">
             <img className="auth-logo" src="/logo.svg" alt="" />
-            <h1>Bienvenue sur Azmo OS <span className="wave">👋</span></h1>
-            <p className="lead">Ton serveur personnel est presque prêt. On va le configurer ensemble, ça prend moins de deux minutes.</p>
+            <h1>{t("Bienvenue sur Azmo OS")} <span className="wave">👋</span></h1>
+            <p className="lead">{t("Ton serveur personnel est presque prêt. On va le configurer ensemble, ça prend moins de deux minutes.")}</p>
             <ul style={{ listStyle: "none", padding: 0, margin: "0 0 26px", display: "grid", gap: 12 }}>
               {[["🔐", "Créer ton compte"], ["🍓", "Donner un nom à ton Pi"], ["🚀", "Installer tes premières apps"]].map(([e, t]) => (
                 <li key={t} className="row" style={{ gap: 14 }}><span style={{ fontSize: 22 }}>{e}</span><b style={{ fontWeight: 600 }}>{t}</b></li>
               ))}
             </ul>
-            <Button variant="primary" size="lg" block onClick={() => setStep(1)}>C'est parti <ArrowRight /></Button>
-            <div className="made-by">Made by <b>Azmo</b></div>
+            <Button variant="primary" size="lg" block onClick={() => setStep(1)}>{t("C'est parti")} <ArrowRight /></Button>
+            <div className="made-by">{t("Made by")} <b>Azmo</b></div>
+            <LangPicker />
           </div>
         )}
 
         {step === 1 && (
           <form className="page" onSubmit={createAccount}>
-            <h1>Faisons connaissance</h1>
-            <p className="lead">Ce compte aura tous les droits sur ton serveur.</p>
-            <Field label="Comment tu t'appelles ?">
-              <Input value={display} onChange={(e) => setDisplay(e.target.value)} placeholder="Azmo" autoFocus required />
+            <h1>{t("Faisons connaissance")}</h1>
+            <p className="lead">{t("Ce compte aura tous les droits sur ton serveur.")}</p>
+            <Field label={t("Comment tu t'appelles ?")}>
+              <Input value={display} onChange={(e) => setDisplay(e.target.value)} placeholder={"Azmo"} autoFocus required />
             </Field>
-            <Field label="Nom d'utilisateur" hint="Il te servira à te connecter : minuscules et chiffres.">
+            <Field label={t("Nom d'utilisateur")} hint={t("Il te servira à te connecter : minuscules et chiffres.")}>
               <Input value={username} onChange={(e) => { setTouchedUser(true); setUsername(e.target.value.toLowerCase()); }} autoCapitalize="none" required pattern="[a-z][a-z0-9_\-]{1,31}" />
             </Field>
-            <Field label="Mot de passe" hint={<PasswordMeter value={password} />}>
+            <Field label={t("Mot de passe")} hint={<PasswordMeter value={password} />}>
               <PasswordInput value={password} onChange={(e) => setPassword(e.target.value)} autoComplete="new-password" minLength={8} required />
             </Field>
-            <Field label="Confirme le mot de passe">
+            <Field label={t("Confirme le mot de passe")}>
               <PasswordInput value={confirm} onChange={(e) => setConfirm(e.target.value)} autoComplete="new-password" required />
             </Field>
             <div className="form-error" role="alert">{error}</div>
             <div className="row">
-              <Button type="button" variant="ghost" onClick={() => setStep(0)}><ArrowLeft /> Retour</Button>
+              <Button type="button" variant="ghost" onClick={() => setStep(0)}><ArrowLeft /> {t("Retour")}</Button>
               <div className="spacer" />
-              <Button variant="primary" loading={busy}>Créer mon compte <ArrowRight /></Button>
+              <Button variant="primary" loading={busy}>{t("Créer mon compte")} <ArrowRight /></Button>
             </div>
           </form>
         )}
 
         {step === 2 && (
           <form className="page" onSubmit={savePi}>
-            <h1>Enchanté {display.split(" ")[0]} !</h1>
-            <p className="lead">Parlons un peu de ton Pi.</p>
+            <h1>{t("Enchanté")} {display.split(" ")[0]} !</h1>
+            <p className="lead">{t("Parlons un peu de ton Pi.")}</p>
             {hw && (
               <div className="callout" style={{ marginBottom: 20 }}>
                 <Sparkles />
                 <div>
-                  <b>J'ai détecté : {hw.model}</b>
-                  <div className="small" style={{ marginTop: 2 }}>{Math.round(hw.ramMB / 1024 * 10) / 10} Go de RAM · {hw.cores} cœurs · <Badge mood="brand">{hw.profile === "performance" ? "Mode performance" : hw.profile === "standard" ? "Mode standard" : "Mode léger"}</Badge></div>
-                  <div className="small muted" style={{ marginTop: 6 }}>{hw.profileHint}</div>
+                  <b>{t("J'ai détecté :")} {machineName(hw.model)}</b>
+                  <div className="small" style={{ marginTop: 2 }}>{Math.round(hw.ramMB / 1024 * 10) / 10} {t("Go de RAM ·")} {hw.cores} {t("cœurs ·")} <Badge mood="brand">{hw.profile === "performance" ? t("Mode performance") : hw.profile === "standard" ? t("Mode standard") : t("Mode léger")}</Badge></div>
+                  <div className="small muted" style={{ marginTop: 6 }}>{profileHint(hw.profile)}</div>
                 </div>
               </div>
             )}
-            <Field label="Nom de ton Pi sur le réseau" hint={<>Tu pourras l'ouvrir depuis n'importe quel appareil avec <b>http://{hostname || "…"}.local</b></>}>
+            <Field label={t("Nom de ton Pi sur le réseau")} hint={<>{t("Tu pourras l'ouvrir depuis n'importe quel appareil avec")} <b>http://{hostname || "…"}.local</b></>}>
               <Input value={hostname} onChange={(e) => setHostname(e.target.value.replace(/[^a-zA-Z0-9-]/g, ""))} required maxLength={63} />
             </Field>
-            <Field label="Fuseau horaire">
+            <Field label={t("Fuseau horaire")}>
               <select className="select" value={tz} onChange={(e) => setTz(e.target.value)}>
                 {[...new Set([tz, ...timezones])].map((z) => <option key={z} value={z}>{z.replace("_", " ")}</option>)}
               </select>
             </Field>
             <div className="form-error" role="alert">{error}</div>
-            <div className="row"><div className="spacer" /><Button variant="primary" loading={busy}>Continuer <ArrowRight /></Button></div>
+            <div className="row"><div className="spacer" /><Button variant="primary" loading={busy}>{t("Continuer")} <ArrowRight /></Button></div>
           </form>
         )}
 
@@ -181,10 +223,10 @@ export function Setup({ status, onDone }: { status: Status; onDone: () => void }
         {step === last && step >= 3 && (
           <div className="page" style={{ textAlign: "center" }}>
             <div style={{ fontSize: 64, lineHeight: 1, marginBottom: 14 }}>🎉</div>
-            <h1>Tout est prêt !</h1>
-            <p className="lead">Ton serveur Azmo OS t'attend. Commence par installer une application depuis l'App Store : Jellyfin pour tes films, Home Assistant pour ta maison…</p>
-            <Button variant="primary" size="lg" block onClick={onDone}>Découvrir mon tableau de bord <ArrowRight /></Button>
-            <div className="made-by">Made with ❤️ by <b>Azmo</b></div>
+            <h1>{t("Tout est prêt !")}</h1>
+            <p className="lead">{t("Ton serveur Azmo OS t'attend. Commence par installer une application depuis l'App Store : Jellyfin pour tes films, Home Assistant pour ta maison…")}</p>
+            <Button variant="primary" size="lg" block onClick={onDone}>{t("Découvrir mon tableau de bord")} <ArrowRight /></Button>
+            <div className="made-by">{t("Made with ❤️ by")} <b>Azmo</b></div>
           </div>
         )}
       </div>
@@ -219,11 +261,11 @@ function WifiStep({ onNext }: { onNext: () => void }) {
   const active = list?.find((w) => w.active);
   return (
     <form className="page" onSubmit={connect}>
-      <h1>Connexion Wi-Fi</h1>
-      <p className="lead">{active ? <>Ton Pi est déjà connecté à <b>{active.ssid}</b>. Tu peux passer cette étape.</> : "Choisis ton réseau Wi-Fi (ou passe si ton Pi est branché en Ethernet)."}</p>
+      <h1>{t("Connexion Wi-Fi")}</h1>
+      <p className="lead">{active ? <>{t("Ton Pi est déjà connecté à")} <b>{active.ssid}</b>{t(". Tu peux passer cette étape.")}</> : t("Choisis ton réseau Wi-Fi (ou passe si ton Pi est branché en Ethernet).")}</p>
       {!list ? <div className="center"><Spinner /></div> : (
         <div style={{ display: "grid", gap: 8, maxHeight: 260, overflowY: "auto", marginBottom: 16 }}>
-          {list.length === 0 && <Callout>Aucun réseau trouvé. Pas d'inquiétude, tu pourras le configurer plus tard dans Réseau.</Callout>}
+          {list.length === 0 && <Callout>{t("Aucun réseau trouvé. Pas d'inquiétude, tu pourras le configurer plus tard dans Réseau.")}</Callout>}
           {list.map((w) => (
             <button type="button" key={w.ssid} onClick={() => { setSel(w); setPw(""); }} className="btn" style={{ justifyContent: "flex-start", height: 48, borderColor: sel?.ssid === w.ssid ? "var(--brand)" : undefined }}>
               <Wifi style={{ opacity: 0.3 + w.signal / 140 }} />
@@ -235,13 +277,13 @@ function WifiStep({ onNext }: { onNext: () => void }) {
         </div>
       )}
       {sel && !sel.active && sel.security && sel.security !== "--" && (
-        <Field label={`Mot de passe de « ${sel.ssid} »`}><PasswordInput value={pw} onChange={(e) => setPw(e.target.value)} autoFocus required /></Field>
+        <Field label={t("Mot de passe de « {0} »", sel.ssid)}><PasswordInput value={pw} onChange={(e) => setPw(e.target.value)} autoFocus required /></Field>
       )}
       <div className="form-error" role="alert">{error}</div>
       <div className="row">
-        <Button type="button" variant="ghost" onClick={onNext}>Passer</Button>
+        <Button type="button" variant="ghost" onClick={onNext}>{t("Passer")}</Button>
         <div className="spacer" />
-        <Button variant="primary" loading={busy} disabled={!sel || sel.active}>Se connecter <ArrowRight /></Button>
+        <Button variant="primary" loading={busy} disabled={!sel || sel.active}>{t("Se connecter")} <ArrowRight /></Button>
       </div>
     </form>
   );

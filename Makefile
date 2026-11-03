@@ -36,10 +36,11 @@ run: build                  ## lance Azmo OS en local sur :8080 (données dans .
 dev:                        ## interface en rechargement à chaud (lancer « make run » à côté)
 	cd frontend && npm run dev
 
-test:                       ## tests Go + vérification TypeScript
+test:                       ## tests Go + vérification TypeScript + traductions
 	go vet ./...
 	go test ./...
 	cd frontend && npx tsc -b
+	cd frontend && npm run i18n:check
 
 release: build-all          ## archives de publication dans dist/
 	cd web/dist && tar --exclude=.keep -czf ../../dist/azmoos-web.tar.gz .

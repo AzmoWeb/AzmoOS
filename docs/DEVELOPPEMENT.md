@@ -78,6 +78,26 @@ Crée `internal/store/apps/<id>.json` :
 Variables : `{{APPDATA}}` (= `/DATA/AppData/<id>`), `{{DATA}}`, `{{TZ}}`, `{{PUID}}`, `{{PGID}}`.
 `go test ./internal/store` vérifie automatiquement le catalogue (champs, ports en double, port 80 réservé…).
 
+## Traduire Azmo OS
+
+Le français est la langue source : dans le code, chaque texte affiché est écrit en français et passé à `t()` :
+
+```tsx
+import { t } from "../lib/i18n";
+<Button>{t("Enregistrer")}</Button>
+toast(t("{0} est installé ✨", app.name));
+```
+
+Les traductions sont dans `frontend/src/i18n/<langue>.ts` (clé = texte français). Le catalogue d'apps a ses propres
+traductions (`"i18n": {"en": {…}}` dans chaque JSON). Pour vérifier qu'il ne manque rien :
+
+```bash
+cd frontend && npm run i18n:check        # liste les textes sans traduction (interface + messages du serveur)
+```
+
+Ajouter une langue : copie `src/i18n/en.ts` en `src/i18n/es.ts`, traduis les valeurs, puis déclare-la dans
+`src/lib/i18n.ts` (`languages` et `dictionaries`) et dans `SetLang` côté Go (`internal/auth`).
+
 ## Ajouter une route API
 
 1. Écris la logique dans le module concerné (`internal/<module>`).

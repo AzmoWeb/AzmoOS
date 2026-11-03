@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState, type ReactElement } from "react";
+import { lazy, Suspense, useCallback, useEffect, useState, type ReactElement } from "react";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { api } from "./api/client";
 import type { Perm, Status } from "./api/types";
@@ -6,7 +6,7 @@ import { JobsProvider, SessionProvider, useSession } from "./session";
 import { Layout } from "./components/Layout";
 import { Loading, ErrorBox } from "./components/ui";
 import { Login, Setup } from "./pages/Auth";
-import { Dashboard } from "./pages/Dashboard";
+import { Desktop } from "./pages/Desktop";
 import { Apps } from "./pages/Apps";
 import { StorePage } from "./pages/Store";
 import { Containers } from "./pages/Containers";
@@ -19,6 +19,17 @@ import { Backups } from "./pages/Backups";
 import { Updates } from "./pages/Updates";
 import { Activity } from "./pages/Activity";
 import { Settings } from "./pages/Settings";
+// Le terminal (xterm.js) n'est chargé que lorsqu'on l'ouvre.
+const TerminalPage = lazy(() => import("./pages/Terminal").then((m) => ({ default: m.TerminalPage })));
+import { NotificationsPage } from "./pages/NotificationsPage";
+import { adoptAccountLang } from "./lib/i18n";
+import { wallpaperById } from "./lib/wallpapers";
+
+/** Fond d'écran Azmo des écrans affichés avant la connexion. */
+function AuthBackdrop() {
+  return <><div className="wallpaper" style={{ background: wallpaperById("azmo")!.css }} aria-hidden /><div className="wallpaper-veil" aria-hidden /></>;
+}
+import { t } from "./lib/i18n";
 
 function Guard({ perm, children }: { perm: Perm; children: ReactElement }) {
   const { can } = useSession();
@@ -35,6 +46,7 @@ export function App() {
       const s = await api.get<Status>("/api/status");
       setStatus(s);
       setError(null);
+      adoptAccountLang(s.user?.lang);
       if (!s.initialized) setSetupMode(true);
     } catch (e) {
       setError((e as Error).message);
@@ -43,9 +55,9 @@ export function App() {
   useEffect(() => { refresh(); }, [refresh]);
 
   if (error && !status) return <div className="auth"><div style={{ width: "min(460px,100%)" }}><ErrorBox error={error} onRetry={refresh} /></div></div>;
-  if (!status) return <div className="auth"><Loading label="Connexion à ton Pi…" /></div>;
-  if (setupMode) return <Setup status={status} onDone={async () => { setSetupMode(false); await refresh(); }} />;
-  if (!status.authenticated) return <Login status={status} onDone={refresh} />;
+  if (!status) return <div className="auth"><Loading label={t("Connexion à ton Pi…")} /></div>;
+  if (setupMode) return <><AuthBackdrop /><Setup status={status} onDone={async () => { setSetupMode(false); await refresh(); }} /></>;
+  if (!status.authenticated) return <><AuthBackdrop /><Login status={status} onDone={refresh} /></>;
 
   return (
     <SessionProvider status={status} refresh={refresh}>
@@ -53,7 +65,7 @@ export function App() {
         <BrowserRouter>
           <Routes>
             <Route element={<Layout />}>
-              <Route index element={<Dashboard />} />
+              <Route index element={<Desktop />} />
               <Route path="apps" element={<Apps />} />
               <Route path="store" element={<Guard perm="apps.manage"><StorePage /></Guard>} />
               <Route path="containers" element={<Guard perm="apps.manage"><Containers /></Guard>} />
@@ -65,6 +77,8 @@ export function App() {
               <Route path="backups" element={<Guard perm="admin"><Backups /></Guard>} />
               <Route path="updates" element={<Guard perm="admin"><Updates /></Guard>} />
               <Route path="activity" element={<Guard perm="admin"><Activity /></Guard>} />
+              <Route path="terminal" element={<Guard perm="admin"><Suspense fallback={<Loading />}><TerminalPage /></Suspense></Guard>} />
+              <Route path="notifications" element={<Guard perm="admin"><NotificationsPage /></Guard>} />
               <Route path="settings" element={<Settings />} />
               <Route path="*" element={<Navigate to="/" replace />} />
             </Route>

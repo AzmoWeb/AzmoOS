@@ -11,7 +11,14 @@
   ],
   "tagline": "Gestionnaire de mots de passe",
   "description": "Serveur compatible Bitwarden, léger et auto-hébergé.",
-  "notes": "Les clients Bitwarden exigent HTTPS : passez par Nginx Proxy Manager ou WireGuard.",
+  "notes": "Les clients Bitwarden exigent HTTPS : active le HTTPS local d'Azmo OS (Sécurité), ou passe par Nginx Proxy Manager ou WireGuard.",
   "compose": "services:\n  vaultwarden:\n    image: vaultwarden/server:latest\n    container_name: vaultwarden\n    restart: unless-stopped\n    ports:\n      - \"8222:80\"\n    volumes:\n      - {{APPDATA}}/data:/data\n",
-  "minRam": 128
+  "minRam": 128,
+  "i18n": {
+    "en": {
+      "tagline": "Password manager",
+      "description": "Bitwarden-compatible server, lightweight and self-hosted.",
+      "notes": "Bitwarden clients require HTTPS: use Azmo OS's local HTTPS, Nginx Proxy Manager or WireGuard."
+    }
+  }
 }

@@ -1,4 +1,5 @@
 // Client HTTP minimal pour l'API Azmo OS.
+import { t, tServer } from "../lib/i18n";
 
 export class ApiError extends Error {
   constructor(message: string, public status: number) {
@@ -26,14 +27,14 @@ async function request<T>(method: string, path: string, body?: unknown, raw?: Bo
   try {
     res = await fetch(path, { method, headers, body: payload, credentials: "same-origin" });
   } catch {
-    throw new ApiError("Impossible de joindre ton Pi. Est-il bien allumé et connecté ?", 0);
+    throw new ApiError(t("Impossible de joindre ton Pi. Est-il bien allumé et connecté ?"), 0);
   }
   if (res.status === 401 && !path.startsWith("/api/login") && !path.startsWith("/api/status")) {
     unauthorizedListeners.forEach((l) => l());
   }
   const data = await res.json().catch(() => ({}));
   if (!res.ok) {
-    const msg = (data as { error?: string }).error ?? res.statusText;
+    const msg = tServer((data as { error?: string }).error ?? res.statusText);
     throw new ApiError(msg.charAt(0).toUpperCase() + msg.slice(1), res.status);
   }
   return data as T;

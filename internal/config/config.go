@@ -25,6 +25,15 @@ type User struct {
 	Salt     string   `json:"salt"`
 	Created  int64    `json:"created"`
 	LastSeen int64    `json:"lastSeen,omitempty"`
+	Lang     string   `json:"lang,omitempty"`
+	// Fond d'écran du bureau : identifiant d'un préréglage, ou « custom » (image envoyée).
+	Wallpaper string `json:"wallpaper,omitempty"`
+
+	// Double authentification (TOTP)
+	TOTPSecret   string   `json:"totpSecret,omitempty"`
+	TOTPPending  string   `json:"totpPending,omitempty"` // secret en cours d'activation
+	TOTPLastStep int64    `json:"totpLastStep,omitempty"`
+	Recovery     []string `json:"recovery,omitempty"` // empreintes SHA-256 des codes de secours
 }
 
 // Session associe un jeton à un utilisateur.
@@ -44,12 +53,76 @@ type Share struct {
 	Users    []string `json:"users,omitempty"`
 }
 
+// Notify configure les alertes et leurs canaux d'envoi.
+type Notify struct {
+	Lang        string `json:"lang"`        // langue des messages envoyés (fr, en)
+	TempWarn    int    `json:"tempWarn"`    // °C
+	DiskWarn    int    `json:"diskWarn"`    // %
+	MemWarn     int    `json:"memWarn"`     // %
+	Temperature bool   `json:"temperature"` // surveillances actives
+	Disk        bool   `json:"disk"`
+	Memory      bool   `json:"memory"`
+	Apps        bool   `json:"apps"`
+	Updates     bool   `json:"updates"`
+	Security    bool   `json:"security"`
+	Backups     bool   `json:"backups"`
+	PushLevel   string `json:"pushLevel"` // niveau minimal envoyé sur le téléphone : info, warning, critical
+
+	Ntfy     NtfyChannel     `json:"ntfy"`
+	Discord  DiscordChannel  `json:"discord"`
+	Telegram TelegramChannel `json:"telegram"`
+}
+
+type NtfyChannel struct {
+	Enabled bool   `json:"enabled"`
+	Server  string `json:"server"`
+	Topic   string `json:"topic"`
+	Token   string `json:"token,omitempty"`
+}
+
+type DiscordChannel struct {
+	Enabled bool   `json:"enabled"`
+	Webhook string `json:"webhook"`
+}
+
+type TelegramChannel struct {
+	Enabled bool   `json:"enabled"`
+	Token   string `json:"token"`
+	ChatID  string `json:"chatId"`
+}
+
+// DefaultNotify renvoie les réglages par défaut des alertes.
+func DefaultNotify() Notify {
+	return Notify{Lang: "fr", TempWarn: 75, DiskWarn: 90, MemWarn: 95, Temperature: true, Disk: true, Memory: true,
+		Apps: true, Updates: true, Security: true, Backups: true, PushLevel: "warning", Ntfy: NtfyChannel{Server: "https://ntfy.sh"}}
+}
+
+// Backup est une sauvegarde planifiée.
+type Backup struct {
+	ID        string `json:"id"`
+	Name      string `json:"name"`
+	Enabled   bool   `json:"enabled"`
+	Frequency string `json:"frequency"` // daily, weekly
+	Hour      int    `json:"hour"`      // 0-23
+	Weekday   int    `json:"weekday"`   // 0 = dimanche (hebdomadaire)
+	Target    string `json:"target"`    // dossier dans /DATA, ou « rclone:distant:chemin »
+	AppData   bool   `json:"appData"`
+	Keep      int    `json:"keep"` // nombre de sauvegardes conservées
+	LastRun   int64  `json:"lastRun,omitempty"`
+	LastOK    bool   `json:"lastOk"`
+	LastError string `json:"lastError,omitempty"`
+	LastFile  string `json:"lastFile,omitempty"`
+	LastSize  int64  `json:"lastSize,omitempty"`
+}
+
 // Config est le contenu de config.json.
 type Config struct {
 	Users    []*User             `json:"users"`
 	Sessions map[string]*Session `json:"sessions"`
 	Shares   []Share             `json:"shares,omitempty"`
 	Settings map[string]string   `json:"settings"`
+	Notify   *Notify             `json:"notify,omitempty"`
+	Backups  []Backup            `json:"backups,omitempty"`
 
 	// Ancien format v0.1 (un seul compte) — migré automatiquement.
 	LegacyUser *User `json:"user,omitempty"`
@@ -118,6 +191,10 @@ func (s *Store) reload() error {
 	}
 	if c.Settings == nil {
 		c.Settings = map[string]string{}
+	}
+	if c.Notify == nil {
+		n := DefaultNotify()
+		c.Notify = &n
 	}
 	var mt time.Time
 	var size int64

@@ -11,5 +11,11 @@
   "tagline": "Sauvegardes chiffrées",
   "description": "Sauvegardez vos données vers le cloud ou un disque, chiffrées.",
   "compose": "services:\n  duplicati:\n    image: lscr.io/linuxserver/duplicati:latest\n    container_name: duplicati\n    restart: unless-stopped\n    environment:\n      - PUID={{PUID}}\n      - PGID={{PGID}}\n      - TZ={{TZ}}\n      - SETTINGS_ENCRYPTION_KEY=azmoos-change-me\n    ports:\n      - \"8200:8200\"\n    volumes:\n      - {{APPDATA}}/config:/config\n      - {{DATA}}:/source\n      - {{DATA}}/Backups:/backups\n",
-  "minRam": 1024
+  "minRam": 1024,
+  "i18n": {
+    "en": {
+      "tagline": "Encrypted backups",
+      "description": "Back up your data to the cloud or a disk, encrypted."
+    }
+  }
 }
