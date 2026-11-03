@@ -1,0 +1,18 @@
+{
+  "id": "pihole",
+  "name": "Pi-hole",
+  "category": "Réseau",
+  "icon": "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/pi-hole.png",
+  "port": 8081,
+  "path": "/admin",
+  "arch": [
+    "arm64",
+    "arm",
+    "amd64"
+  ],
+  "tagline": "Bloqueur de pubs réseau",
+  "description": "Bloque les publicités et traqueurs pour tout votre réseau via DNS.",
+  "notes": "Mot de passe admin : changez-le dans le compose (FTLCONF_webserver_api_password). Le port 53 doit être libre.",
+  "compose": "services:\n  pihole:\n    image: pihole/pihole:latest\n    container_name: pihole\n    restart: unless-stopped\n    environment:\n      - TZ={{TZ}}\n      - FTLCONF_webserver_api_password=azmoos\n    ports:\n      - \"53:53/tcp\"\n      - \"53:53/udp\"\n      - \"8081:80\"\n    volumes:\n      - {{APPDATA}}/etc-pihole:/etc/pihole\n",
+  "minRam": 256
+}

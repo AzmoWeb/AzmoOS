@@ -1,0 +1,16 @@
+{
+  "id": "homeassistant",
+  "name": "Home Assistant",
+  "category": "Domotique",
+  "icon": "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/home-assistant.png",
+  "port": 8123,
+  "arch": [
+    "arm64",
+    "arm",
+    "amd64"
+  ],
+  "tagline": "La maison connectée",
+  "description": "Contrôlez et automatisez tous vos appareils domotiques en local.",
+  "compose": "services:\n  homeassistant:\n    image: ghcr.io/home-assistant/home-assistant:stable\n    container_name: homeassistant\n    restart: unless-stopped\n    privileged: true\n    network_mode: host\n    environment:\n      - TZ={{TZ}}\n    volumes:\n      - {{APPDATA}}/config:/config\n      - /run/dbus:/run/dbus:ro\n",
+  "minRam": 1024
+}

@@ -1,0 +1,17 @@
+{
+  "id": "nextcloud",
+  "name": "Nextcloud",
+  "category": "Cloud",
+  "icon": "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/nextcloud.png",
+  "port": 8443,
+  "scheme": "https",
+  "arch": [
+    "arm64",
+    "amd64"
+  ],
+  "tagline": "Votre cloud privé",
+  "description": "Fichiers, agenda, contacts, photos synchronisés sur tous vos appareils.",
+  "notes": "Au premier lancement, créez le compte admin dans l'interface web.",
+  "compose": "services:\n  nextcloud:\n    image: lscr.io/linuxserver/nextcloud:latest\n    container_name: nextcloud\n    restart: unless-stopped\n    environment:\n      - PUID={{PUID}}\n      - PGID={{PGID}}\n      - TZ={{TZ}}\n    ports:\n      - \"8443:443\"\n    volumes:\n      - {{APPDATA}}/config:/config\n      - {{APPDATA}}/data:/data\n",
+  "minRam": 2048
+}

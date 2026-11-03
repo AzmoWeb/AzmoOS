@@ -1,0 +1,17 @@
+{
+  "id": "vaultwarden",
+  "name": "Vaultwarden",
+  "category": "Sécurité",
+  "icon": "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/vaultwarden.png",
+  "port": 8222,
+  "arch": [
+    "arm64",
+    "arm",
+    "amd64"
+  ],
+  "tagline": "Gestionnaire de mots de passe",
+  "description": "Serveur compatible Bitwarden, léger et auto-hébergé.",
+  "notes": "Les clients Bitwarden exigent HTTPS : passez par Nginx Proxy Manager ou WireGuard.",
+  "compose": "services:\n  vaultwarden:\n    image: vaultwarden/server:latest\n    container_name: vaultwarden\n    restart: unless-stopped\n    ports:\n      - \"8222:80\"\n    volumes:\n      - {{APPDATA}}/data:/data\n",
+  "minRam": 128
+}

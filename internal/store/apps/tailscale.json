@@ -1,0 +1,17 @@
+{
+  "id": "tailscale",
+  "name": "Tailscale",
+  "category": "Réseau",
+  "icon": "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/tailscale.png",
+  "port": 0,
+  "arch": [
+    "arm64",
+    "arm",
+    "amd64"
+  ],
+  "minRam": 128,
+  "tagline": "Accède à ton Pi de partout",
+  "description": "VPN maillé sans configuration : accède à ton Pi et à tes apps depuis n'importe où, sans ouvrir de port sur ta box.",
+  "notes": "Après l'installation, ouvre les logs du conteneur : un lien de connexion à ton compte Tailscale y est affiché.",
+  "compose": "services:\n  tailscale:\n    image: tailscale/tailscale:latest\n    container_name: tailscale\n    hostname: azmoos\n    restart: unless-stopped\n    network_mode: host\n    cap_add:\n      - NET_ADMIN\n      - SYS_MODULE\n    environment:\n      - TS_STATE_DIR=/var/lib/tailscale\n      - TS_USERSPACE=false\n    volumes:\n      - {{APPDATA}}/state:/var/lib/tailscale\n      - /dev/net/tun:/dev/net/tun\n"
+}

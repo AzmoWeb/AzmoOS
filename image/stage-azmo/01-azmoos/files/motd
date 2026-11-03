@@ -1,0 +1,15 @@
+
+     _                         ___  ____
+    / \    _____ __ ___   ___ / _ \/ ___|
+   / _ \  |_  / '_ ` _ \ / _ \ | | \___ \
+  / ___ \  / /| | | | | | (_) | |_| |___) |
+ /_/   \_\/___|_| |_| |_|\___/ \___/|____/
+                              Made by Azmo
+
+ Interface web : http://azmoos.local   (ou http://<ip-du-pi>)
+ Service       : sudo systemctl status azmoos
+ Journaux      : sudo journalctl -u azmoos -f
+ Données       : /DATA
+
+ Pense à changer le mot de passe SSH par défaut : passwd
+

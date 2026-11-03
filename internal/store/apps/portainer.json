@@ -1,0 +1,17 @@
+{
+  "id": "portainer",
+  "name": "Portainer",
+  "category": "Outils",
+  "icon": "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/portainer.png",
+  "port": 9443,
+  "scheme": "https",
+  "arch": [
+    "arm64",
+    "arm",
+    "amd64"
+  ],
+  "tagline": "Gestion Docker avancée",
+  "description": "Interface complète pour gérer conteneurs, images, réseaux et volumes.",
+  "compose": "services:\n  portainer:\n    image: portainer/portainer-ce:lts\n    container_name: portainer\n    restart: unless-stopped\n    ports:\n      - \"9443:9443\"\n    volumes:\n      - /var/run/docker.sock:/var/run/docker.sock\n      - {{APPDATA}}/data:/data\n",
+  "minRam": 256
+}

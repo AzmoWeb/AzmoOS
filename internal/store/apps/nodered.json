@@ -1,0 +1,16 @@
+{
+  "id": "nodered",
+  "name": "Node-RED",
+  "category": "Domotique",
+  "icon": "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/node-red.png",
+  "port": 1880,
+  "arch": [
+    "arm64",
+    "arm",
+    "amd64"
+  ],
+  "tagline": "Automatisation visuelle",
+  "description": "Créez des flux d'automatisation en glisser-déposer.",
+  "compose": "services:\n  nodered:\n    image: nodered/node-red:latest\n    container_name: nodered\n    restart: unless-stopped\n    user: \"{{PUID}}:{{PGID}}\"\n    environment:\n      - TZ={{TZ}}\n    ports:\n      - \"1880:1880\"\n    volumes:\n      - {{APPDATA}}/data:/data\n",
+  "minRam": 512
+}

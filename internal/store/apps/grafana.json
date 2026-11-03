@@ -1,0 +1,17 @@
+{
+  "id": "grafana",
+  "name": "Grafana",
+  "category": "Outils",
+  "icon": "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/grafana.png",
+  "port": 3003,
+  "arch": [
+    "arm64",
+    "arm",
+    "amd64"
+  ],
+  "tagline": "Tableaux de bord",
+  "description": "Visualisez vos métriques avec de superbes dashboards.",
+  "notes": "Identifiants : admin / admin",
+  "compose": "services:\n  grafana:\n    image: grafana/grafana-oss:latest\n    container_name: grafana\n    restart: unless-stopped\n    user: \"{{PUID}}\"\n    ports:\n      - \"3003:3000\"\n    volumes:\n      - {{APPDATA}}/data:/var/lib/grafana\n",
+  "minRam": 512
+}
