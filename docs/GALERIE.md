@@ -27,6 +27,14 @@ Sur un Raspberry Pi, le modèle, la température et le bridage s'affichent aussi
 
 <img src="images/bureau.webp" alt="Le bureau : widgets à gauche, tes apps en icônes" width="100%">
 
+### Widgets personnalisés : applications et pense-bête
+
+<img src="images/bureau-widgets.webp" alt="Widgets personnalisés : applications et pense-bête" width="100%">
+
+### Personnaliser les widgets
+
+<img src="images/bureau-personnaliser.webp" alt="Personnaliser les widgets" width="100%">
+
 ### Le lanceur : toutes les sections en un clic
 
 <img src="images/lanceur.webp" alt="Le lanceur : toutes les sections en un clic" width="100%">
@@ -135,6 +143,10 @@ Sur un Raspberry Pi, le modèle, la température et le bridage s'affichent aussi
 
 <img src="images/mises-a-jour.webp" alt="Mises à jour" width="100%">
 
+### Mises à jour automatiques des applications
+
+<img src="images/mises-a-jour-apps.webp" alt="Mises à jour automatiques des applications" width="100%">
+
 ### Journal
 
 <img src="images/journal.webp" alt="Journal" width="100%">
@@ -152,8 +164,9 @@ Sur un Raspberry Pi, le modèle, la température et le bridage s'affichent aussi
 ## Sur téléphone
 
 <p>
-  <img src="images/mobile-bureau.webp" alt="Mobile : Bureau" width="24%">
-  <img src="images/mobile-applications.webp" alt="Mobile : Applications" width="24%">
-  <img src="images/mobile-lanceur.webp" alt="Mobile : Lanceur" width="24%">
-  <img src="images/mobile-terminal.webp" alt="Mobile : Terminal" width="24%">
+  <img src="images/mobile-bureau.webp" alt="Mobile : Bureau" width="19%">
+  <img src="images/mobile-applications.webp" alt="Mobile : Applications" width="19%">
+  <img src="images/mobile-lanceur.webp" alt="Mobile : Lanceur" width="19%">
+  <img src="images/mobile-terminal.webp" alt="Mobile : Terminal" width="19%">
+  <img src="images/mobile-personnaliser.webp" alt="Mobile : Personnaliser" width="19%">
 </p>

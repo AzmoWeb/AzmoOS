@@ -1,5 +1,15 @@
 # Journal des versions
 
+## v0.4.0 — « À ta façon »
+
+- **Widgets personnalisables** : bouton « Personnaliser » sur le bureau pour ajouter, retirer et déplacer les widgets
+  (flèches ou glisser-déposer). Deux nouveaux widgets : **Applications** (en marche / arrêtées) et **Pense-bête**
+  (notes enregistrées sur le Pi). Disposition enregistrée par compte.
+- **Mises à jour automatiques des applications** : chaque jour ou chaque semaine à l'heure choisie, Azmo OS télécharge
+  les nouvelles images Docker et recrée les conteneurs seulement si une nouvelle version existe. Les apps arrêtées
+  restent arrêtées, chaque app peut être exclue, un historique et une notification résument le passage.
+  Les erreurs courantes (limite de Docker Hub, pas d'Internet, disque plein) sont expliquées simplement.
+
 ## v0.3.0 — « Sérénité »
 
 - **Nouvelle interface « bureau »** : fond d'écran (8 fonds Azmo ou ta propre photo), barre du haut en verre dépoli

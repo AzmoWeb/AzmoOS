@@ -80,13 +80,14 @@ type PublicUser struct {
 	LastSeen     int64    `json:"lastSeen"`
 	Lang         string   `json:"lang"`
 	Wallpaper    string   `json:"wallpaper"`
+	Widgets      []string `json:"widgets"`
 	TOTP         bool     `json:"totp"`
 	RecoveryLeft int      `json:"recoveryLeft"`
 }
 
 func public(u *config.User) PublicUser {
 	p := PublicUser{Username: u.Username, Display: u.Display, Role: u.Role, Perms: u.Perms, Created: u.Created, LastSeen: u.LastSeen,
-		Lang: u.Lang, Wallpaper: u.Wallpaper, TOTP: u.TOTPSecret != "", RecoveryLeft: len(u.Recovery)}
+		Lang: u.Lang, Wallpaper: u.Wallpaper, Widgets: u.Widgets, TOTP: u.TOTPSecret != "", RecoveryLeft: len(u.Recovery)}
 	if p.Display == "" {
 		p.Display = u.Username
 	}
@@ -532,6 +533,59 @@ func (a *Auth) SetLang(username, lang string) error {
 var wallpaperRe = regexp.MustCompile(`^[a-z0-9-]{1,32}$`)
 
 // SetWallpaper enregistre le fond d'écran choisi (préréglage ou « custom »).
+// Widgets connus du bureau.
+var Widgets = []string{"clock", "system", "storage", "network", "apps", "note"}
+
+// SetWidgets enregistre les widgets affichés sur le bureau, dans l'ordre.
+// Une liste nil revient à la disposition par défaut.
+func (a *Auth) SetWidgets(username string, list []string) error {
+	var clean []string
+	if list != nil {
+		clean = []string{}
+		for _, w := range list {
+			if !slices.Contains(Widgets, w) {
+				return errors.New("widget inconnu")
+			}
+			if !slices.Contains(clean, w) {
+				clean = append(clean, w)
+			}
+		}
+	}
+	return a.cfg.Update(func(c *config.Config) error {
+		if u := c.FindUser(username); u != nil {
+			u.Widgets = clean
+		}
+		return nil
+	})
+}
+
+// MaxNote est la taille maximale du pense-bête.
+const MaxNote = 4000
+
+// Note renvoie le pense-bête d'un compte.
+func (a *Auth) Note(username string) string {
+	var n string
+	a.cfg.View(func(c *config.Config) {
+		if u := c.FindUser(username); u != nil {
+			n = u.Note
+		}
+	})
+	return n
+}
+
+// SetNote enregistre le pense-bête du bureau.
+func (a *Auth) SetNote(username, text string) error {
+	if len(text) > MaxNote {
+		return errors.New("pense-bête trop long (4000 caractères maximum)")
+	}
+	return a.cfg.Update(func(c *config.Config) error {
+		if u := c.FindUser(username); u != nil {
+			u.Note = text
+		}
+		return nil
+	})
+}
+
 func (a *Auth) SetWallpaper(username, id string) error {
 	if !wallpaperRe.MatchString(id) {
 		return errors.New("fond d'écran invalide")

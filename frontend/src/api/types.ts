@@ -11,6 +11,7 @@ export interface User {
   lastSeen: number;
   lang?: string;
   wallpaper?: string;
+  widgets?: WidgetId[] | null;
   totp: boolean;
   recoveryLeft: number;
 }
@@ -274,3 +275,26 @@ export interface HTTPSInfo {
 }
 
 export interface TerminalInfo { enabled: boolean; account: { name: string; home: string; shell: string; root: boolean } }
+
+export type WidgetId = "clock" | "system" | "storage" | "network" | "apps" | "note";
+
+export interface AppUpdateEntry { app: string; name: string; time: number; result: "updated" | "error"; error?: string }
+export interface AppUpdateSettings {
+  enabled: boolean;
+  frequency: "daily" | "weekly";
+  hour: number;
+  weekday: number;
+  exclude: string[];
+  lastRun?: number;
+  lastCheck: number;
+  lastCount: number;
+  lastFail: number;
+  history: AppUpdateEntry[];
+}
+export interface AppUpdatesResponse {
+  settings: AppUpdateSettings;
+  apps: { id: string; name: string; icon: string; enabled: boolean }[];
+  next: number;
+  running: boolean;
+  current: string;
+}

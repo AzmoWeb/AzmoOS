@@ -17,6 +17,16 @@ Chaque section (Fichiers, App Store, Sécurité…) s'ouvre comme une **fenêtre
 **Changer le fond d'écran** : avatar → *Fond d'écran*, puis choisis un des 8 fonds Azmo ou envoie ta propre photo
 (JPEG, PNG ou WebP, 12 Mo maximum). Ton choix suit ton compte sur tous tes appareils.
 
+**Personnaliser les widgets** : clique sur **Personnaliser** sous les widgets.
+
+- ✕ retire un widget, ⌃ et ⌄ le déplacent (avec une souris, tu peux aussi le glisser-déposer) ;
+- **Ajouter un widget** propose ceux qui ne sont pas affichés : *Horloge*, *Système*, *Stockage*, *Réseau*,
+  *Applications* (combien tournent, lesquelles sont arrêtées) et *Pense-bête* (des notes enregistrées sur ton Pi,
+  visibles par toi seul·e) ;
+- **Par défaut** remet la disposition d'origine, **Terminé** quitte le mode édition.
+
+Chaque compte a son propre bureau : ce que tu changes ne modifie pas celui des autres.
+
 ## Installer une application
 
 1. Va dans **App Store**.
@@ -151,6 +161,19 @@ place et redéploie les apps. Garde une copie hors du Pi !
 
 - **Azmo OS** : vérifié automatiquement toutes les 12 h ; installation en un clic, fichier vérifié par SHA-256.
 - **Système** : mises à jour Raspberry Pi OS / Debian, avec indication quand un redémarrage est nécessaire.
+- **Applications, automatiquement** : dans *Mises à jour → Mises à jour automatiques des applications*, active
+  l'interrupteur puis choisis le jour et l'heure (4 h du matin par défaut). À chaque passage, Azmo OS :
+  1. ignore les apps arrêtées (elles restent arrêtées) et celles que tu as décochées ;
+  2. télécharge les nouvelles images Docker ;
+  3. recrée les conteneurs **seulement** si une nouvelle version existe : tes données et réglages sont gardés ;
+  4. note le résultat dans l'historique et t'envoie une notification.
+
+  Si le Pi était éteint à l'heure prévue, le passage est rattrapé au démarrage. **Vérifier maintenant** lance un
+  passage tout de suite.
+
+> 💡 Décoche les apps sensibles (base de données, Nextcloud avant une grosse mise à jour…) si tu préfères lire
+> les notes de version avant. Les apps qui utilisent une version fixe (`image: app:1.2.3`) ne changent pas de version :
+> la mise à jour automatique suit le tag écrit dans leur fichier compose.
 
 ## Langue
 

@@ -13,6 +13,7 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/azmoweb/azmoos/internal/appupdate"
 	"github.com/azmoweb/azmoos/internal/auth"
 	"github.com/azmoweb/azmoos/internal/backup"
 	"github.com/azmoweb/azmoos/internal/backupsched"
@@ -128,6 +129,8 @@ func main() {
 	srv.Sched = &backupsched.Scheduler{Config: cfg, Backup: srv.Backup, Jobs: runner, Events: evlog, Notify: srv.Notify,
 		DataDir: *dataDir, RcloneConfig: filepath.Join(*confDir, "rclone.conf")}
 	go srv.Sched.Loop()
+	srv.AppUpd = &appupdate.Scheduler{Config: cfg, Apps: st, Events: evlog, Notify: srv.Notify}
+	go srv.AppUpd.Loop()
 	go (&watch.Watcher{Notify: srv.Notify, Monitor: srv.Monitor, Docker: srv.Docker, Store: st, Jobs: runner, Updater: srv.Updater}).Run()
 
 	// Vérification des mises à jour en tâche de fond (au démarrage puis toutes les 12 h).

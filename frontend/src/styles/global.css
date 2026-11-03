@@ -629,9 +629,51 @@ html[data-wall="light"] .add-tile-box { border-color: rgba(0, 0, 0, 0.25); }
 .wall-option.upload { display: grid; place-items: center; background: var(--surface-2); border: 2px dashed var(--border-strong); color: var(--text-2); }
 .wall-option.upload svg { width: 22px; height: 22px; }
 
+/* ---------- Widgets personnalisables ---------- */
+.widgets.editing { position: static; }
+.widget-slot { border-radius: 24px; outline: 2px dashed rgba(255, 255, 255, 0.28); outline-offset: 4px; cursor: grab; transition: opacity .15s, transform .15s; }
+html[data-wall="light"] .widget-slot { outline-color: rgba(34, 29, 46, 0.25); }
+.widget-slot.dragging { opacity: 0.4; transform: scale(0.98); }
+.widget-tools { display: flex; align-items: center; gap: 4px; padding: 0 4px 8px; font-size: 13px; font-weight: 700; color: var(--desk-text); text-shadow: var(--desk-shadow); }
+.widget-tools .grip { width: 16px; height: 16px; opacity: .7; }
+.widget-tools button { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 10px; border: 1px solid var(--glass-border); background: var(--glass); color: var(--text); cursor: pointer; backdrop-filter: var(--glass-blur); }
+.widget-tools button:hover:not(:disabled) { background: var(--brand-soft); }
+.widget-tools button:disabled { opacity: .35; cursor: default; }
+.widget-tools button svg { width: 16px; height: 16px; }
+.widget-preview { pointer-events: none; }
+.widget-preview .note-area { pointer-events: none; }
+.widget-add-list { display: flex; flex-direction: column; gap: 8px; }
+.widget-add-list button { display: flex; align-items: center; gap: 12px; text-align: left; padding: 10px 12px; border-radius: 14px; border: 1px solid var(--glass-border); background: rgba(255, 255, 255, 0.05); color: var(--text); cursor: pointer; }
+.widget-add-list button:hover { background: var(--brand-soft); border-color: var(--brand); }
+.widget-add-list b { display: block; font-size: 14px; }
+.widget-add-list small { display: block; color: var(--muted); font-size: 12px; }
+.widget-add-list .plus { margin-left: auto; width: 18px; height: 18px; color: var(--brand); flex: none; }
+.widget-add-icon { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 11px; background: var(--brand-soft); color: var(--brand); flex: none; }
+.widget-add-icon svg { width: 18px; height: 18px; }
+.widgets-actions { display: flex; gap: 8px; justify-content: flex-end; }
+.widgets-actions .btn svg { width: 15px; height: 15px; }
+.apps-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+.apps-stats a { display: flex; flex-direction: column; padding: 12px 14px; border-radius: 16px; background: rgba(255, 255, 255, 0.06); text-decoration: none; color: var(--text-2); }
+.apps-stats a:hover { background: rgba(255, 255, 255, 0.1); }
+.apps-stats b { font-size: 30px; line-height: 1.1; font-weight: 800; color: var(--text); }
+.apps-stats b.mood-good { color: var(--good); } .apps-stats b.mood-warn { color: var(--warn); }
+.apps-stats span { font-size: 13px; }
+.note-area { width: 100%; min-height: 120px; resize: vertical; border: 1px solid var(--glass-border); border-radius: 14px; padding: 10px 12px; background: rgba(255, 255, 255, 0.05); color: var(--text); font: inherit; font-size: 14px; line-height: 1.5; outline: none; }
+.note-area:focus { border-color: var(--brand); box-shadow: 0 0 0 3px var(--brand-soft); }
+html[data-wall="light"] .apps-stats a, html[data-wall="light"] .note-area, html[data-wall="light"] .widget-add-list button { background: rgba(255, 255, 255, 0.55); }
+
+/* ---------- Mises à jour automatiques des apps ---------- */
+.autoupd-apps { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 8px; }
+.autoupd-app { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border: 1px solid var(--border); border-radius: 14px; background: var(--surface-2); cursor: pointer; }
+.autoupd-app > span { flex: 1; min-width: 0; font-weight: 600; font-size: 14px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.autoupd-history { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.autoupd-history li { display: flex; align-items: center; gap: 8px; font-size: 14px; flex-wrap: wrap; }
+.autoupd-history li svg { width: 17px; height: 17px; flex: none; }
+
 @media (max-width: 1080px) {
   .desktop-grid { grid-template-columns: 1fr; }
   .widgets { position: static; display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+  .widgets-actions { grid-column: 1 / -1; }
 }
 @media (max-width: 640px) {
   .topbar { height: 58px; gap: 8px; }
