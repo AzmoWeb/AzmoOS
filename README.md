@@ -1,8 +1,11 @@
 <div align="center">
 
-<img src="frontend/public/logo.svg" width="110" alt="Logo Azmo OS">
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="branding/logotype-sombre.svg">
+  <img src="branding/logotype-clair.svg" width="420" alt="Azmo OS">
+</picture>
 
-# Azmo OS
+<br>
 
 **Ton serveur personnel sur Raspberry Pi. Simple, beau, et à toi.**
 
@@ -15,7 +18,7 @@ Films, photos, fichiers, domotique, VPN, NAS… pilotés depuis une interface we
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178C6?logo=typescript&logoColor=white)](frontend/tsconfig.json)
 [![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?logo=docker&logoColor=white)](internal/store/apps)
 
-[**Installation**](#-installation) · [**Aperçu**](#-aperçu) · [**Fonctionnalités**](#-fonctionnalités) · [**Applications**](#-les-applications) · [**Documentation**](#-documentation)
+[**Installation**](#-installation) · [**Aperçu**](#-aperçu) · [**Fonctionnalités**](#-fonctionnalités) · [**Applications**](#-les-applications) · [**Documentation**](#-documentation) · [**Logo**](branding/)
 
 <br>
 
@@ -307,6 +310,7 @@ Publier une version : `git tag v0.2.0 && git push origin v0.2.0`. GitHub Actions
 | [Développement](docs/DEVELOPPEMENT.md) | Contribuer, ajouter une app, publier |
 | [API](docs/API.md) | Référence de l'API REST |
 | [Galerie](docs/GALERIE.md) | Toutes les captures d'écran |
+| [Identité visuelle](branding/) | Logo, couleurs, typographie, fichiers à télécharger |
 | [Versions](CHANGELOG.md) | Nouveautés de chaque version |
 
 ---

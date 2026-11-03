@@ -2,6 +2,8 @@
 
 ## v0.2.0 — « Humain »
 
+- **Nouveau logo « le A-serveur »** et identité visuelle complète (`branding/`) : logotypes, monochromes, favicon, image de partage, fond d'écran, icônes pour l'écran d'accueil des téléphones.
+
 - **Installation en une commande par SSH** qui pose les questions (nom, utilisateur, mot de passe, nom du Pi) : on se connecte directement sur l'IP locale.
 - Commandes `azmod user list|add|passwd|delete`, prises en compte à chaud par le service.
 
