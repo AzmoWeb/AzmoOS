@@ -1,0 +1,16 @@
+{
+  "id": "filebrowser",
+  "name": "File Browser",
+  "category": "Cloud",
+  "icon": "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/filebrowser.png",
+  "port": 8085,
+  "arch": [
+    "arm64",
+    "arm",
+    "amd64"
+  ],
+  "tagline": "Gestionnaire de fichiers web",
+  "description": "Partagez et gérez vos fichiers depuis le navigateur.",
+  "notes": "Identifiants par défaut : admin / mot de passe affiché dans les logs du conteneur.",
+  "compose": "services:\n  filebrowser:\n    image: filebrowser/filebrowser:latest\n    container_name: filebrowser\n    restart: unless-stopped\n    user: \"{{PUID}}:{{PGID}}\"\n    ports:\n      - \"8085:80\"\n    volumes:\n      - {{DATA}}:/srv\n      - {{APPDATA}}/database:/database\n      - {{APPDATA}}/config:/config\n"
+}

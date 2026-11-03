@@ -1,0 +1,14 @@
+{
+  "id": "syncthing",
+  "name": "Syncthing",
+  "category": "Cloud",
+  "icon": "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/syncthing.png",
+  "port": 8384,
+  "arch": [
+    "arm64",
+    "amd64"
+  ],
+  "tagline": "Synchronisation pair-à-pair",
+  "description": "Synchronisez vos dossiers entre appareils, sans cloud tiers.",
+  "compose": "services:\n  syncthing:\n    image: lscr.io/linuxserver/syncthing:latest\n    container_name: syncthing\n    restart: unless-stopped\n    environment:\n      - PUID={{PUID}}\n      - PGID={{PGID}}\n      - TZ={{TZ}}\n    ports:\n      - \"8384:8384\"\n      - \"22000:22000/tcp\"\n      - \"22000:22000/udp\"\n      - \"21027:21027/udp\"\n    volumes:\n      - {{APPDATA}}/config:/config\n      - {{DATA}}:/data\n"
+}

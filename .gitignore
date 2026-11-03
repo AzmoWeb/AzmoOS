@@ -1,0 +1,5 @@
+dist/
+.pi-gen/
+image/stage-azmo/01-azmoos/files/azmod
+image/stage-azmo/01-azmoos/files/azmoos.service
+.dev/

@@ -1,0 +1,15 @@
+{
+  "id": "plex",
+  "name": "Plex",
+  "category": "Multimédia",
+  "icon": "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/plex.png",
+  "port": 32400,
+  "path": "/web",
+  "arch": [
+    "arm64",
+    "amd64"
+  ],
+  "tagline": "Serveur multimédia populaire",
+  "description": "Organisez et diffusez vos médias sur tous vos appareils.",
+  "compose": "services:\n  plex:\n    image: lscr.io/linuxserver/plex:latest\n    container_name: plex\n    restart: unless-stopped\n    network_mode: host\n    environment:\n      - PUID={{PUID}}\n      - PGID={{PGID}}\n      - TZ={{TZ}}\n      - VERSION=docker\n    volumes:\n      - {{APPDATA}}/config:/config\n      - {{DATA}}/Media:/data/media\n"
+}

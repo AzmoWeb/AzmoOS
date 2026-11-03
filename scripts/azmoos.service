@@ -1,0 +1,13 @@
+[Unit]
+Description=AzmoOS — tableau de bord serveur (made by Azmo)
+After=network-online.target docker.service
+Wants=network-online.target docker.service
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/azmod -addr :80 -data /DATA -config /etc/azmoos
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target

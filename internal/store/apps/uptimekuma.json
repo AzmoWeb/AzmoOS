@@ -1,0 +1,15 @@
+{
+  "id": "uptimekuma",
+  "name": "Uptime Kuma",
+  "category": "Outils",
+  "icon": "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/uptime-kuma.png",
+  "port": 3001,
+  "arch": [
+    "arm64",
+    "arm",
+    "amd64"
+  ],
+  "tagline": "Surveillance de services",
+  "description": "Surveillez vos sites et services, avec alertes.",
+  "compose": "services:\n  uptimekuma:\n    image: louislam/uptime-kuma:1\n    container_name: uptimekuma\n    restart: unless-stopped\n    ports:\n      - \"3001:3001\"\n    volumes:\n      - {{APPDATA}}/data:/app/data\n"
+}

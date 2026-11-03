@@ -1,0 +1,15 @@
+{
+  "id": "gitea",
+  "name": "Gitea",
+  "category": "Développement",
+  "icon": "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/gitea.png",
+  "port": 3002,
+  "arch": [
+    "arm64",
+    "arm",
+    "amd64"
+  ],
+  "tagline": "Votre GitHub privé",
+  "description": "Forge Git légère : dépôts, issues, pull requests.",
+  "compose": "services:\n  gitea:\n    image: gitea/gitea:latest\n    container_name: gitea\n    restart: unless-stopped\n    environment:\n      - USER_UID={{PUID}}\n      - USER_GID={{PGID}}\n    ports:\n      - \"3002:3000\"\n      - \"2222:22\"\n    volumes:\n      - {{APPDATA}}/data:/data\n"
+}

@@ -1,0 +1,4 @@
+avahi-daemon
+curl
+ca-certificates
+htop

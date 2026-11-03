@@ -1,0 +1,16 @@
+{
+  "id": "wgeasy",
+  "name": "WireGuard Easy",
+  "category": "Réseau",
+  "icon": "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/wireguard.png",
+  "port": 51821,
+  "arch": [
+    "arm64",
+    "arm",
+    "amd64"
+  ],
+  "tagline": "VPN pour accéder à votre Pi",
+  "description": "Serveur VPN WireGuard avec interface web simple.",
+  "notes": "Redirigez le port UDP 51820 de votre box vers le Pi.",
+  "compose": "services:\n  wgeasy:\n    image: ghcr.io/wg-easy/wg-easy:15\n    container_name: wgeasy\n    restart: unless-stopped\n    environment:\n      - INSECURE=true\n    cap_add:\n      - NET_ADMIN\n      - SYS_MODULE\n    sysctls:\n      - net.ipv4.ip_forward=1\n      - net.ipv4.conf.all.src_valid_mark=1\n    ports:\n      - \"51820:51820/udp\"\n      - \"51821:51821/tcp\"\n    volumes:\n      - {{APPDATA}}/etc:/etc/wireguard\n      - /lib/modules:/lib/modules:ro\n"
+}
