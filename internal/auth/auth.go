@@ -9,6 +9,7 @@ import (
 	"crypto/subtle"
 	"encoding/hex"
 	"errors"
+	"fmt"
 	"net"
 	"net/http"
 	"regexp"
@@ -18,6 +19,7 @@ import (
 	"time"
 
 	"github.com/azmoweb/azmoos/internal/config"
+	"github.com/azmoweb/azmoos/internal/totp"
 )
 
 const (
@@ -70,16 +72,20 @@ func hash(password, salt string) string {
 
 // PublicUser est la vue d'un compte sans secrets.
 type PublicUser struct {
-	Username string   `json:"username"`
-	Display  string   `json:"display"`
-	Role     string   `json:"role"`
-	Perms    []string `json:"perms"`
-	Created  int64    `json:"created"`
-	LastSeen int64    `json:"lastSeen"`
+	Username     string   `json:"username"`
+	Display      string   `json:"display"`
+	Role         string   `json:"role"`
+	Perms        []string `json:"perms"`
+	Created      int64    `json:"created"`
+	LastSeen     int64    `json:"lastSeen"`
+	Lang         string   `json:"lang"`
+	TOTP         bool     `json:"totp"`
+	RecoveryLeft int      `json:"recoveryLeft"`
 }
 
 func public(u *config.User) PublicUser {
-	p := PublicUser{Username: u.Username, Display: u.Display, Role: u.Role, Perms: u.Perms, Created: u.Created, LastSeen: u.LastSeen}
+	p := PublicUser{Username: u.Username, Display: u.Display, Role: u.Role, Perms: u.Perms, Created: u.Created, LastSeen: u.LastSeen,
+		Lang: u.Lang, TOTP: u.TOTPSecret != "", RecoveryLeft: len(u.Recovery)}
 	if p.Display == "" {
 		p.Display = u.Username
 	}
@@ -404,6 +410,119 @@ func (a *Auth) RevokeOthers(username, current string) error {
 			if s.User == username && k != current {
 				delete(c.Sessions, k)
 			}
+		}
+		return nil
+	})
+}
+
+// ---------- Double authentification ----------
+
+const issuer = "Azmo OS"
+
+// TOTPEnabled indique si le compte a la double authentification.
+func (a *Auth) TOTPEnabled(username string) (on bool) {
+	a.cfg.View(func(c *config.Config) {
+		if u := c.FindUser(username); u != nil {
+			on = u.TOTPSecret != ""
+		}
+	})
+	return
+}
+
+// BeginTOTP prépare l'activation : renvoie le secret et le lien otpauth:// (QR code).
+func (a *Auth) BeginTOTP(username, host string) (secret, uri string, err error) {
+	secret = totp.NewSecret()
+	err = a.cfg.Update(func(c *config.Config) error {
+		u := c.FindUser(username)
+		if u == nil {
+			return errors.New("utilisateur introuvable")
+		}
+		u.TOTPPending = secret
+		return nil
+	})
+	account := username
+	if host != "" {
+		account = username + "@" + host
+	}
+	return secret, totp.URI(secret, account, issuer), err
+}
+
+func hashRecovery(code string) string {
+	code = strings.ToUpper(strings.NewReplacer(" ", "", "-", "").Replace(code))
+	h := sha256.Sum256([]byte("azmoos-recovery:" + code))
+	return hex.EncodeToString(h[:])
+}
+
+// ConfirmTOTP active la double authentification si le code est bon, et renvoie les codes de secours.
+func (a *Auth) ConfirmTOTP(username, code string) ([]string, error) {
+	codes := totp.RecoveryCodes(8)
+	err := a.cfg.Update(func(c *config.Config) error {
+		u := c.FindUser(username)
+		if u == nil || u.TOTPPending == "" {
+			return errors.New("aucune activation en cours, recommence depuis le début")
+		}
+		step, ok := totp.Verify(u.TOTPPending, code, time.Now(), 0)
+		if !ok {
+			return errors.New("code incorrect : vérifie l'heure de ton téléphone et réessaie")
+		}
+		u.TOTPSecret, u.TOTPPending, u.TOTPLastStep = u.TOTPPending, "", step
+		u.Recovery = nil
+		for _, rc := range codes {
+			u.Recovery = append(u.Recovery, hashRecovery(rc))
+		}
+		return nil
+	})
+	if err != nil {
+		return nil, err
+	}
+	return codes, nil
+}
+
+// DisableTOTP désactive la double authentification.
+func (a *Auth) DisableTOTP(username string) error {
+	return a.cfg.Update(func(c *config.Config) error {
+		u := c.FindUser(username)
+		if u == nil {
+			return errors.New("utilisateur introuvable")
+		}
+		u.TOTPSecret, u.TOTPPending, u.TOTPLastStep, u.Recovery = "", "", 0, nil
+		return nil
+	})
+}
+
+// VerifySecondFactor vérifie un code TOTP ou un code de secours (consommé).
+// Renvoie (ok, codeDeSecoursUtilisé).
+func (a *Auth) VerifySecondFactor(username, code string) (ok, recovery bool) {
+	_ = a.cfg.Update(func(c *config.Config) error {
+		u := c.FindUser(username)
+		if u == nil || u.TOTPSecret == "" {
+			return nil
+		}
+		if step, good := totp.Verify(u.TOTPSecret, code, time.Now(), u.TOTPLastStep); good {
+			u.TOTPLastStep, ok = step, true
+			return nil
+		}
+		h := hashRecovery(code)
+		for i, r := range u.Recovery {
+			if subtle.ConstantTimeCompare([]byte(r), []byte(h)) == 1 {
+				u.Recovery = append(u.Recovery[:i], u.Recovery[i+1:]...)
+				ok, recovery = true, true
+				return nil
+			}
+		}
+		return nil
+	})
+	return
+}
+
+// SetLang enregistre la langue préférée de l'utilisateur.
+func (a *Auth) SetLang(username, lang string) error {
+	if lang != "fr" && lang != "en" {
+		return fmt.Errorf("langue non prise en charge : %s", lang)
+	}
+	return a.cfg.Update(func(c *config.Config) error {
+		if u := c.FindUser(username); u != nil {
+			u.Lang = lang
 		}
 		return nil
 	})

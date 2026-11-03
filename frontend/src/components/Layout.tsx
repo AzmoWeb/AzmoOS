@@ -2,42 +2,46 @@ import { useEffect, useState, type ReactNode } from "react";
 import { NavLink, Outlet, useLocation } from "react-router-dom";
 import {
   Home, LayoutGrid, Store, Boxes, FolderOpen, HardDrive, Wifi, ShieldCheck, Users, Archive, RefreshCw,
-  ScrollText, Settings, Menu as MenuIcon, LogOut, Moon, Sun,
+  ScrollText, Settings, Menu as MenuIcon, LogOut, Moon, Sun, TerminalSquare, Bell,
 } from "lucide-react";
+import { NotificationBell } from "./Notifications";
 import { api } from "../api/client";
 import type { Perm } from "../api/types";
 import { useJobs, useSession } from "../session";
 import { Avatar, IconButton } from "./ui";
+import { t } from "../lib/i18n";
 
 interface NavItem { to: string; label: string; icon: ReactNode; perm?: Perm }
 
 const groups: { title?: string; items: NavItem[] }[] = [
-  { items: [{ to: "/", label: "Accueil", icon: <Home /> }] },
+  { items: [{ to: "/", label: t("Accueil"), icon: <Home /> }] },
   {
-    title: "Applications",
+    title: t("Applications"),
     items: [
-      { to: "/apps", label: "Mes applications", icon: <LayoutGrid /> },
-      { to: "/store", label: "App Store", icon: <Store />, perm: "apps.manage" },
-      { to: "/containers", label: "Conteneurs", icon: <Boxes />, perm: "apps.manage" },
+      { to: "/apps", label: t("Mes applications"), icon: <LayoutGrid /> },
+      { to: "/store", label: t("App Store"), icon: <Store />, perm: "apps.manage" },
+      { to: "/containers", label: t("Conteneurs"), icon: <Boxes />, perm: "apps.manage" },
     ],
   },
   {
-    title: "Stockage",
+    title: t("Stockage"),
     items: [
-      { to: "/files", label: "Fichiers", icon: <FolderOpen />, perm: "files.read" },
-      { to: "/storage", label: "Disques & partages", icon: <HardDrive />, perm: "admin" },
+      { to: "/files", label: t("Fichiers"), icon: <FolderOpen />, perm: "files.read" },
+      { to: "/storage", label: t("Disques & partages"), icon: <HardDrive />, perm: "admin" },
     ],
   },
   {
-    title: "Système",
+    title: t("Système"),
     items: [
-      { to: "/network", label: "Réseau", icon: <Wifi />, perm: "admin" },
-      { to: "/security", label: "Sécurité", icon: <ShieldCheck />, perm: "admin" },
-      { to: "/users", label: "Utilisateurs", icon: <Users />, perm: "admin" },
-      { to: "/backups", label: "Sauvegardes", icon: <Archive />, perm: "admin" },
-      { to: "/updates", label: "Mises à jour", icon: <RefreshCw />, perm: "admin" },
-      { to: "/activity", label: "Journal", icon: <ScrollText />, perm: "admin" },
-      { to: "/settings", label: "Réglages", icon: <Settings /> },
+      { to: "/terminal", label: t("Terminal"), icon: <TerminalSquare />, perm: "admin" },
+      { to: "/network", label: t("Réseau"), icon: <Wifi />, perm: "admin" },
+      { to: "/security", label: t("Sécurité"), icon: <ShieldCheck />, perm: "admin" },
+      { to: "/users", label: t("Utilisateurs"), icon: <Users />, perm: "admin" },
+      { to: "/backups", label: t("Sauvegardes"), icon: <Archive />, perm: "admin" },
+      { to: "/notifications", label: t("Notifications"), icon: <Bell />, perm: "admin" },
+      { to: "/updates", label: t("Mises à jour"), icon: <RefreshCw />, perm: "admin" },
+      { to: "/activity", label: t("Journal"), icon: <ScrollText />, perm: "admin" },
+      { to: "/settings", label: t("Réglages"), icon: <Settings /> },
     ],
   },
 ];
@@ -68,21 +72,23 @@ export function Layout() {
   return (
     <div className="shell">
       <div className="topbar">
-        <IconButton label="Menu" onClick={() => setOpen(true)}><MenuIcon /></IconButton>
+        <IconButton label={t("Menu")} onClick={() => setOpen(true)}><MenuIcon /></IconButton>
         <img src="/logo.svg" alt="" />
-        <b>Azmo OS</b>
+        <b>{t("Azmo OS")}</b>
         <div className="spacer" />
+        <NotificationBell />
         <Avatar name={user.display} size={30} />
       </div>
       {open && <div className="scrim" onClick={() => setOpen(false)} />}
       <aside className={`sidebar ${open ? "open" : ""}`}>
         <NavLink to="/" className="brand">
           <img src="/logo.svg" alt="" />
-          <div>
-            <div className="brand-name">Azmo OS</div>
-            <div className="brand-by">Made by <b>Azmo</b></div>
+          <div style={{ flex: 1 }}>
+            <div className="brand-name">{t("Azmo OS")}</div>
+            <div className="brand-by">{t("Made by")} <b>Azmo</b></div>
           </div>
         </NavLink>
+        <div className="sidebar-bell hide-sm"><NotificationBell /></div>
         {groups.map((g, i) => {
           const items = g.items.filter((it) => !it.perm || can(it.perm));
           if (!items.length) return null;
@@ -103,10 +109,10 @@ export function Layout() {
             <Avatar name={user.display} />
             <div className="me-text">
               <b>{user.display}</b>
-              <span>{user.role === "admin" ? "Administrateur" : "Membre"}</span>
+              <span>{user.role === "admin" ? t("Administrateur") : t("Membre")}</span>
             </div>
-            <IconButton label={theme === "dark" ? "Thème clair" : "Thème sombre"} onClick={toggleTheme}>{theme === "dark" ? <Sun /> : <Moon />}</IconButton>
-            <IconButton label="Se déconnecter" onClick={logout}><LogOut /></IconButton>
+            <IconButton label={theme === "dark" ? t("Thème clair") : t("Thème sombre")} onClick={toggleTheme}>{theme === "dark" ? <Sun /> : <Moon />}</IconButton>
+            <IconButton label={t("Se déconnecter")} onClick={logout}><LogOut /></IconButton>
           </div>
         </div>
       </aside>

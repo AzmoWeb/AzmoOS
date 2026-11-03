@@ -5,4 +5,5 @@ samba
 ufw
 exfatprogs
 parted
+rclone
 htop

@@ -13,5 +13,12 @@
   "description": "Alternative moderne à Pi-hole, avec DNS-over-HTTPS.",
   "notes": "Pendant l'assistant, choisissez le port 3000 pour l'interface web (le port 80 est utilisé par AzmoOS).",
   "compose": "services:\n  adguardhome:\n    image: adguard/adguardhome:latest\n    container_name: adguardhome\n    restart: unless-stopped\n    ports:\n      - \"53:53/tcp\"\n      - \"53:53/udp\"\n      - \"3000:3000\"\n    volumes:\n      - {{APPDATA}}/work:/opt/adguardhome/work\n      - {{APPDATA}}/conf:/opt/adguardhome/conf\n",
-  "minRam": 256
+  "minRam": 256,
+  "i18n": {
+    "en": {
+      "tagline": "Network-wide ad and tracker blocking DNS",
+      "description": "A modern alternative to Pi-hole, with DNS-over-HTTPS.",
+      "notes": "During the setup wizard, choose port 3000 for the web interface (port 80 is used by Azmo OS)."
+    }
+  }
 }

@@ -33,7 +33,8 @@
 |---|---|---|
 | Base | Raspberry Pi OS Lite 64 bits (Debian) | Support officiel de tous les Pi, firmware, NetworkManager |
 | Backend | **Go**, binaire statique sans dépendance | ~10 Mo de RAM, démarre en 50 ms, tourne même sur un Pi Zero 2 W |
-| Frontend | **React 19 + TypeScript + Vite** | Moderne, typé, rapide à charger (~80 Ko gzip) |
+| Frontend | **React 19 + TypeScript + Vite** | Moderne, typé, rapide à charger (~180 Ko gzip, terminal compris) |
+| Langues | Français (source) et anglais, `t("texte français")` | Code lisible, traductions vérifiées en CI |
 | Apps | **Docker + Docker Compose v2** | Isolation, catalogue facile, mises à jour simples |
 | Données | Fichiers JSON (config) + JSONL (journal) | Pas de serveur de base de données : léger, lisible, sauvegardable |
 | Partage | Samba (SMB) | Compatible Windows, macOS, Linux, Android, iOS |
@@ -67,6 +68,12 @@
 | `firewall` | Pare-feu ufw |
 | `backup` | Sauvegarde/restauration de la configuration et des apps |
 | `updater` | Mise à jour d'Azmo OS depuis les Releases GitHub (vérification SHA-256) |
+| `totp` | Double authentification (RFC 6238) et codes de secours |
+| `tlsmgr` | HTTPS local : autorité de certification à contrainte de nom, certificat serveur renouvelé automatiquement |
+| `terminal` | Terminal web : pseudo-terminal Linux (PTY) et WebSocket (RFC 6455), sans dépendance |
+| `notify` | Centre de notifications et envoi vers ntfy, Discord, Telegram |
+| `watch` | Surveillance continue (toutes les minutes) qui déclenche les alertes |
+| `backupsched` | Sauvegardes planifiées vers un dossier ou le cloud (rclone) |
 
 ## Adaptation au matériel
 
@@ -104,6 +111,9 @@ Chaque app du catalogue déclare `minRam` (Mo) et les architectures supportées.
 | `/DATA/AppData/.azmoos/apps/<app>/docker-compose.yml` | Définition des apps installées |
 | `/DATA/Disks/<nom>` | Disques externes montés |
 | `/etc/samba/azmoos-shares.conf` | Partages réseau générés |
+| `/etc/azmoos/tls/` | Autorité locale et certificat HTTPS |
+| `/etc/azmoos/notifications.json` | Historique des notifications |
+| `/etc/azmoos/rclone.conf` | Comptes cloud des sauvegardes (rclone) |
 
 ## Premier démarrage (image)
 
@@ -118,5 +128,5 @@ Chaque app du catalogue déclare `minRam` (Mo) et les architectures supportées.
 - **v0.1** : tableau de bord, App Store, fichiers, conteneurs ✅
 - **v0.2** : interface React/TS, multi-utilisateurs, disques USB, NAS Samba, réseau/Wi-Fi, pare-feu,
   sauvegardes, journal, mises à jour, assistant de premier démarrage, adaptation au matériel ✅
-- **v0.3** : terminal web, sauvegardes planifiées, notifications, 2FA, HTTPS local
-- **v0.4** : multi-langue, widgets personnalisables, marketplace communautaire
+- **v0.3** : terminal web, sauvegardes planifiées, notifications, 2FA, HTTPS local, interface en anglais ✅
+- **v0.4** : widgets personnalisables, mises à jour automatiques des apps, catalogue communautaire, autres langues

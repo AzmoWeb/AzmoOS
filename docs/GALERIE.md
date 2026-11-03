@@ -1,7 +1,7 @@
 # Galerie
 
-Toutes les captures d'Azmo OS. Elles ont été réalisées sur une machine de test avec des données de
-démonstration ; sur un Raspberry Pi, le modèle, la température et le bridage s'affichent aussi.
+Toutes les captures d'Azmo OS, réalisées sur une machine de test avec des données de démonstration.
+Sur un Raspberry Pi, le modèle, la température et le bridage s'affichent aussi.
 
 ### Assistant : bienvenue
 
@@ -22,6 +22,10 @@ démonstration ; sur un Raspberry Pi, le modèle, la température et le bridage 
 ### Connexion
 
 <img src="images/connexion.webp" alt="Connexion" width="100%">
+
+### Connexion : code de double authentification
+
+<img src="images/2fa-connexion.webp" alt="Connexion : code de double authentification" width="100%">
 
 ### Tableau de bord
 
@@ -55,9 +59,37 @@ démonstration ; sur un Raspberry Pi, le modèle, la température et le bridage 
 
 <img src="images/conteneurs.webp" alt="Conteneurs Docker" width="100%">
 
+### Terminal web
+
+<img src="images/terminal.webp" alt="Terminal web" width="100%">
+
 ### Sécurité
 
 <img src="images/securite.webp" alt="Sécurité" width="100%">
+
+### Double authentification : QR code
+
+<img src="images/2fa-qr-code.webp" alt="Double authentification : QR code" width="100%">
+
+### Double authentification : codes de secours
+
+<img src="images/2fa-codes-secours.webp" alt="Double authentification : codes de secours" width="100%">
+
+### HTTPS local
+
+<img src="images/https-local.webp" alt="HTTPS local" width="100%">
+
+### Notifications : la cloche
+
+<img src="images/notifications-cloche.webp" alt="Notifications : la cloche" width="100%">
+
+### Notifications : ce qui est surveillé
+
+<img src="images/notifications-alertes.webp" alt="Notifications : ce qui est surveillé" width="100%">
+
+### Notifications : sur le téléphone
+
+<img src="images/notifications-telephone.webp" alt="Notifications : sur le téléphone" width="100%">
 
 ### Utilisateurs
 
@@ -70,6 +102,14 @@ démonstration ; sur un Raspberry Pi, le modèle, la température et le bridage 
 ### Sauvegardes
 
 <img src="images/sauvegardes.webp" alt="Sauvegardes" width="100%">
+
+### Sauvegardes automatiques
+
+<img src="images/sauvegardes-automatiques.webp" alt="Sauvegardes automatiques" width="100%">
+
+### Planifier une sauvegarde
+
+<img src="images/sauvegardes-planifier.webp" alt="Planifier une sauvegarde" width="100%">
 
 ### Mises à jour
 
@@ -91,11 +131,20 @@ démonstration ; sur un Raspberry Pi, le modèle, la température et le bridage 
 
 <img src="images/theme-clair-store.webp" alt="Thème clair : App Store" width="100%">
 
+### English : tableau de bord
+
+<img src="images/english-dashboard.webp" alt="English : tableau de bord" width="100%">
+
+### English : App Store
+
+<img src="images/english-store.webp" alt="English : App Store" width="100%">
+
 ### Sur mobile
 
 <p align="center">
-  <img src="images/mobile-accueil.webp" width="24%" alt="Mobile : accueil">
-  <img src="images/mobile-applications.webp" width="24%" alt="Mobile : applications">
-  <img src="images/mobile-menu.webp" width="24%" alt="Mobile : menu">
-  <img src="images/mobile-store.webp" width="24%" alt="Mobile : App Store">
+  <img src="images/mobile-accueil.webp" width="19%" alt="Mobile : accueil">
+  <img src="images/mobile-applications.webp" width="19%" alt="Mobile : applications">
+  <img src="images/mobile-menu.webp" width="19%" alt="Mobile : menu">
+  <img src="images/mobile-store.webp" width="19%" alt="Mobile : App Store">
+  <img src="images/mobile-terminal.webp" width="19%" alt="Mobile : terminal">
 </p>

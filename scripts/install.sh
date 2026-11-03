@@ -56,7 +56,7 @@ step "Installation des dépendances"
 export DEBIAN_FRONTEND=noninteractive
 apt-get update -qq
 PKGS="curl ca-certificates avahi-daemon"
-[ "${AZMO_MINIMAL:-0}" = 1 ] || PKGS="$PKGS samba ufw exfatprogs parted"
+[ "${AZMO_MINIMAL:-0}" = 1 ] || PKGS="$PKGS samba ufw exfatprogs parted rclone"
 # shellcheck disable=SC2086
 apt-get install -y -qq $PKGS >/dev/null
 ok "Paquets système installés"
@@ -206,6 +206,6 @@ else
   echo "   L'assistant va te guider pour créer ton compte."
 fi
 echo
-echo "   Commandes utiles :  sudo azmod user help        (comptes)"
+echo "   Commandes utiles :  sudo azmod user help        (comptes, 2FA)"
 echo "                       sudo journalctl -u azmoos -f (journaux)"
 echo

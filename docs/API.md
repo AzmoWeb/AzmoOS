@@ -11,7 +11,8 @@ Les erreurs renvoient `{"error": "message lisible"}` avec un code HTTP adapté
 |---|---|---|
 | GET | `/api/status` | Version, nom d'hôte, état d'initialisation, utilisateur connecté, matériel |
 | POST | `/api/setup` | `{username, display, password}`, création du premier compte (une seule fois) |
-| POST | `/api/login` | `{username, password}` |
+| POST | `/api/login` | `{username, password, code?}`. Avec la double authentification, une première réponse `{ok:false, totp:true}` demande le code (TOTP ou code de secours) |
+| GET | `/api/https/ca.crt` | Certificat de l'autorité locale, à installer sur les appareils |
 | POST | `/api/logout` | |
 
 ## Compte connecté
@@ -22,6 +23,10 @@ Les erreurs renvoient `{"error": "message lisible"}` avec un code HTTP adapté
 | POST | `/api/me/profile` | `{display}` |
 | POST | `/api/me/password` | `{current, password}` |
 | POST | `/api/me/sessions/revoke` | Ferme les autres sessions |
+| POST | `/api/me/lang` | `{lang: "fr" \| "en"}` |
+| POST | `/api/me/2fa/begin` | Démarre l'activation : `{secret, uri}` (lien otpauth:// pour le QR code) |
+| POST | `/api/me/2fa/confirm` | `{code}` → `{recovery: [8 codes]}` |
+| POST | `/api/me/2fa/disable` | `{password, code}` |
 | GET | `/api/system` | Statistiques temps réel |
 | GET | `/api/system/history` | Historique (1 point / 10 s, 1 h) |
 | GET | `/api/hardware` | Matériel détecté et profil |
@@ -65,3 +70,8 @@ Les erreurs renvoient `{"error": "message lisible"}` avec un code HTTP adapté
 | Pare-feu | `GET /api/firewall`, `POST /api/firewall/{enable,disable}`, `POST /api/firewall/rules`, `DELETE /api/firewall/rules/{n}` |
 | Sauvegardes | `GET /api/backup?appdata=1`, `POST /api/backup/restore` (multipart) |
 | Journal | `GET /api/events?category=&limit=` |
+| Double authentification | `DELETE /api/users/{name}/2fa` (réinitialisation) |
+| Terminal | `GET /api/terminal/info`, `POST /api/terminal/settings` `{enabled}`, `GET /api/terminal` (WebSocket : le client envoie `0`+saisie ou `1`+`{"cols","rows"}`, le serveur renvoie la sortie en binaire) |
+| HTTPS | `GET /api/https`, `POST /api/https` `{enabled, redirect}`, `POST /api/https/regenerate` |
+| Notifications | `GET /api/notifications`, `POST /api/notifications/read` `{id}` (0 = toutes), `POST /api/notifications/clear`, `GET/POST /api/notifications/settings`, `POST /api/notifications/test` |
+| Sauvegardes planifiées | `GET/POST /api/backups/schedules`, `DELETE /api/backups/schedules/{id}`, `POST …/{id}/run`, `GET …/{id}/files`, `POST …/{id}/restore` `{file}` |

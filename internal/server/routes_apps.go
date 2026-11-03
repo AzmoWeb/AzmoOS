@@ -23,6 +23,9 @@ type catalogView struct {
 	store.App
 	Compatible bool   `json:"compatible"`
 	Warning    string `json:"warning,omitempty"`
+	// WarnKind permet à l'interface de rédiger l'avertissement dans sa langue : « arch » ou « ram ».
+	WarnKind string `json:"warnKind,omitempty"`
+	CPUArch  string `json:"cpuArch,omitempty"`
 }
 
 func (s *Server) routesApps(handle routeFn) {
@@ -143,10 +146,10 @@ func (s *Server) catalog(w http.ResponseWriter, r *http.Request) {
 	for _, a := range s.Store.Catalog() {
 		v := catalogView{App: a, Compatible: true}
 		if len(a.Arch) > 0 && !slices.Contains(a.Arch, arch) {
-			v.Compatible = false
+			v.Compatible, v.WarnKind, v.CPUArch = false, "arch", arch
 			v.Warning = "Cette application n'existe pas pour ton processeur (" + arch + "). Un système 64 bits est nécessaire."
 		} else if a.MinRAM > 0 && s.Hardware.RAMMB > 0 && a.MinRAM > s.Hardware.RAMMB {
-			v.Compatible = s.Hardware.Profile != system.ProfileLight
+			v.Compatible, v.WarnKind = s.Hardware.Profile != system.ProfileLight, "ram"
 			v.Warning = "Cette application demande environ " + strconv.Itoa(a.MinRAM/1024) + " Go de RAM, ton Pi en a " + ramLabel(s.Hardware.RAMMB) + ". Elle risque d'être lente."
 			if a.MinRAM < 1024 {
 				v.Warning = "Cette application demande environ " + strconv.Itoa(a.MinRAM) + " Mo de RAM, ton Pi en a " + ramLabel(s.Hardware.RAMMB) + "."

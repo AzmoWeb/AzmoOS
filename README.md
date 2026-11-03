@@ -119,6 +119,7 @@ un assistant te guide pour créer ton compte. Sans réseau, le Pi crée son prop
 | Mot de passe oublié | `sudo azmod user passwd azmo` |
 | État du service | `sudo systemctl status azmoos` |
 | Journaux en direct | `sudo journalctl -u azmoos -f` |
+| Double authentification perdue | `sudo azmod user 2fa-off azmo` |
 | Désinstaller (garde tes données) | `curl -fsSL https://raw.githubusercontent.com/AzmoWeb/AzmoOS/main/scripts/uninstall.sh \| sudo bash` |
 
 Installation sans questions (automatisation) :
@@ -148,14 +149,20 @@ Toutes les options et le dépannage : **[docs/INSTALLATION.md](docs/INSTALLATION
 | **Utilisateurs et permissions** | **Sécurité** : pare-feu, SSH, sessions |
 | <img src="docs/images/journal.webp" alt="Journal"> | <img src="docs/images/sauvegardes.webp" alt="Sauvegardes"> |
 | **Journal des événements** | **Sauvegarde et restauration** |
-| <img src="docs/images/theme-clair.webp" alt="Thème clair"> | <img src="docs/images/reglages.webp" alt="Réglages"> |
-| **Thème clair** | **Réglages** |
+| <img src="docs/images/terminal.webp" alt="Terminal web"> | <img src="docs/images/2fa-qr-code.webp" alt="Double authentification"> |
+| **Terminal web** dans le navigateur | **Double authentification** par QR code |
+| <img src="docs/images/notifications-cloche.webp" alt="Notifications"> | <img src="docs/images/notifications-telephone.webp" alt="Notifications sur le téléphone"> |
+| **Notifications** dans l'interface | **Sur ton téléphone** : ntfy, Discord, Telegram |
+| <img src="docs/images/sauvegardes-automatiques.webp" alt="Sauvegardes automatiques"> | <img src="docs/images/https-local.webp" alt="HTTPS local"> |
+| **Sauvegardes automatiques** vers un disque ou le cloud | **HTTPS local** avec guide d'installation du certificat |
+| <img src="docs/images/theme-clair.webp" alt="Thème clair"> | <img src="docs/images/english-dashboard.webp" alt="Interface en anglais"> |
+| **Thème clair** | **English** : toute l'interface est traduite |
 
 <p align="center">
   <img src="docs/images/mobile-accueil.webp" width="23%" alt="Accueil sur mobile">
   <img src="docs/images/mobile-applications.webp" width="23%" alt="Applications sur mobile">
   <img src="docs/images/mobile-menu.webp" width="23%" alt="Menu sur mobile">
-  <img src="docs/images/mobile-store.webp" width="23%" alt="App Store sur mobile">
+  <img src="docs/images/mobile-terminal.webp" width="23%" alt="Terminal sur mobile">
   <br><b>Pensé aussi pour le téléphone</b>
 </p>
 
@@ -201,6 +208,26 @@ Administrateurs et membres, avec des permissions précises : gérer les apps, vo
 ### 💾 Sauvegardes et 🔄 mises à jour
 Sauvegarde et restauration de toute la configuration en un clic. Mises à jour d'Azmo OS
 (vérifiées par SHA-256) et du système, avec signalement quand un redémarrage est nécessaire.
+
+### 💻 Terminal web
+La ligne de commande de ton Pi directement dans le navigateur, même sur téléphone : barre de touches
+(Échap, Tab, Ctrl+C, flèches), redimensionnement automatique, chaque session tracée dans le journal.
+
+### 🔐 Double authentification et HTTPS local
+Codes à 6 chiffres compatibles Google Authenticator, Authy, 1Password ou Bitwarden, avec 8 codes de secours.
+HTTPS en un interrupteur : Azmo OS crée sa propre autorité de certification, **limitée à ton réseau local**,
+et te guide pour l'installer sur iPhone, Android, Windows, Mac et Linux.
+
+### 🔔 Notifications, jusque sur ton téléphone
+Température, alimentation, disque presque plein, mémoire saturée, app qui plante, mise à jour disponible,
+tentatives d'intrusion, résultat des sauvegardes. Dans l'interface, et sur ton téléphone via **ntfy**, **Discord** ou **Telegram**.
+
+### 🗓️ Sauvegardes planifiées
+Chaque jour ou chaque semaine, vers un **disque USB**, un partage réseau ou le **cloud** (Google Drive, Dropbox,
+OneDrive, S3… grâce à rclone). Rattrapage si le Pi était éteint, conservation des N dernières, restauration en un clic.
+
+### 🌍 Français et English
+Toute l'interface est disponible en français et en anglais, avec détection automatique et choix enregistré par compte.
 
 ### 🧭 Premier démarrage sans prise de tête
 Questions posées pendant l'installation, ou assistant dans le navigateur avec l'image.
@@ -254,8 +281,8 @@ Envie d'en ajouter une ? Un simple fichier JSON suffit, voir [CONTRIBUTING.md](C
  │  ├─ Interface React (/usr/share/azmoos/web)  │
  │  └─ Modules : système · matériel · apps ·    │
  │     fichiers · disques · partages · réseau · │
- │     pare-feu · sauvegardes · mises à jour ·  │
- │     utilisateurs · journal                   │
+ │     pare-feu · HTTPS · terminal · alertes ·  │
+ │     sauvegardes · mises à jour · journal     │
  └───────┬──────────────────┬───────────────────┘
          ▼                  ▼
   Docker + Compose     Raspberry Pi OS (Debian)
@@ -320,11 +347,15 @@ Publier une version : `git tag v0.2.0 && git push origin v0.2.0`. GitHub Actions
 - [x] Tableau de bord, App Store, fichiers, conteneurs
 - [x] Interface React, multi-utilisateurs, NAS, réseau, pare-feu, sauvegardes, journal
 - [x] Installation interactive en une commande, image prête à flasher
-- [ ] Terminal web intégré
-- [ ] Sauvegardes planifiées vers un disque ou le cloud
-- [ ] Double authentification et HTTPS local
-- [ ] Notifications (température, disque plein, mises à jour)
-- [ ] Interface en anglais
+- [x] Terminal web intégré
+- [x] Sauvegardes planifiées vers un disque ou le cloud
+- [x] Double authentification et HTTPS local
+- [x] Notifications (température, disque plein, mises à jour…) jusque sur le téléphone
+- [x] Interface en anglais
+- [ ] Widgets personnalisables sur le tableau de bord
+- [ ] Mises à jour automatiques des applications
+- [ ] Catalogue d'applications communautaire
+- [ ] Autres langues (espagnol, allemand…) : [les contributions sont les bienvenues](docs/DEVELOPPEMENT.md#traduire-azmo-os)
 
 ## 🤝 Contribuer
 

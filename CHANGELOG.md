@@ -1,5 +1,22 @@
 # Journal des versions
 
+## v0.3.0 — « Sérénité »
+
+- **Terminal web** : la ligne de commande dans le navigateur (PTY + WebSocket implémentés sans dépendance),
+  barre de touches pour mobile, réservé aux administrateurs, désactivable, chaque session journalisée.
+- **Double authentification (TOTP)** : QR code, 8 codes de secours à usage unique, protection contre la réutilisation
+  d'un code, réinitialisation par un administrateur ou `azmod user 2fa-off`.
+- **HTTPS local** : autorité de certification propre au Pi, **limitée aux noms et réseaux locaux** (contrainte de nom),
+  certificat renouvelé automatiquement quand l'IP change, redirection HTTP → HTTPS, guide d'installation par système.
+- **Notifications** : surveillance de la température, de l'alimentation, du stockage, de la mémoire, des apps qui plantent,
+  des mises à jour, des tentatives d'intrusion et des sauvegardes ; envoi sur téléphone via ntfy, Discord ou Telegram ;
+  pas de répétition tant que le problème dure.
+- **Sauvegardes planifiées** : quotidiennes ou hebdomadaires, vers un dossier (disque USB, partage) ou le cloud avec rclone,
+  rattrapage si le Pi était éteint, conservation des N dernières, restauration depuis la liste.
+- **Interface en anglais** : ~800 textes et 114 messages serveur traduits, catalogue d'apps bilingue, détection automatique,
+  langue enregistrée par compte ; `npm run i18n:check` (vérifié en CI) empêche d'oublier une traduction.
+- Corrigé : la pastille de la cloche bloquait le clic.
+
 ## v0.2.0 — « Humain »
 
 - **Nouveau logo « le A-serveur »** et identité visuelle complète (`branding/`) : logotypes, monochromes, favicon, image de partage, fond d'écran, icônes pour l'écran d'accueil des téléphones.

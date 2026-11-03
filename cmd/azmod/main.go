@@ -15,17 +15,22 @@ import (
 
 	"github.com/azmoweb/azmoos/internal/auth"
 	"github.com/azmoweb/azmoos/internal/backup"
+	"github.com/azmoweb/azmoos/internal/backupsched"
 	"github.com/azmoweb/azmoos/internal/config"
 	"github.com/azmoweb/azmoos/internal/docker"
 	"github.com/azmoweb/azmoos/internal/events"
 	"github.com/azmoweb/azmoos/internal/files"
 	"github.com/azmoweb/azmoos/internal/jobs"
+	"github.com/azmoweb/azmoos/internal/notify"
 	"github.com/azmoweb/azmoos/internal/server"
 	"github.com/azmoweb/azmoos/internal/shares"
 	"github.com/azmoweb/azmoos/internal/storage"
 	"github.com/azmoweb/azmoos/internal/store"
 	"github.com/azmoweb/azmoos/internal/system"
+	"github.com/azmoweb/azmoos/internal/terminal"
+	"github.com/azmoweb/azmoos/internal/tlsmgr"
 	"github.com/azmoweb/azmoos/internal/updater"
+	"github.com/azmoweb/azmoos/internal/watch"
 	"github.com/azmoweb/azmoos/web"
 )
 
@@ -40,6 +45,7 @@ func main() {
 		flag.PrintDefaults()
 	}
 	addr := flag.String("addr", ":80", "adresse d'écoute")
+	httpsAddr := flag.String("https-addr", ":443", "adresse d'écoute HTTPS (quand le HTTPS local est activé)")
 	dataDir := flag.String("data", "/DATA", "dossier des données utilisateur")
 	confDir := flag.String("config", "/etc/azmoos", "dossier de configuration")
 	webDir := flag.String("web", "/usr/share/azmoos/web", "interface web (si absente : version embarquée)")
@@ -115,6 +121,15 @@ func main() {
 		Hardware: hw,
 		Web:      webFS,
 	}
+	srv.Notify = notify.New(cfg)
+	srv.Terminal = &terminal.Manager{Max: 5}
+	srv.TLS = tlsmgr.New(*confDir)
+	srv.HTTPSAddr = *httpsAddr
+	srv.Sched = &backupsched.Scheduler{Config: cfg, Backup: srv.Backup, Jobs: runner, Events: evlog, Notify: srv.Notify,
+		DataDir: *dataDir, RcloneConfig: filepath.Join(*confDir, "rclone.conf")}
+	go srv.Sched.Loop()
+	go (&watch.Watcher{Notify: srv.Notify, Monitor: srv.Monitor, Docker: srv.Docker, Store: st, Jobs: runner, Updater: srv.Updater}).Run()
+
 	// Vérification des mises à jour en tâche de fond (au démarrage puis toutes les 12 h).
 	go func() {
 		time.Sleep(time.Minute)
@@ -125,7 +140,12 @@ func main() {
 	}()
 
 	evlog.Add(events.Info, "system", "", "", "Azmo OS "+version+" démarré sur "+hw.Model)
-	hs := &http.Server{Addr: *addr, Handler: srv.Handler(), ReadHeaderTimeout: 10 * time.Second}
+	h := srv.Handler()
+	srv.HTTPSHandler = h
+	if err := srv.StartHTTPS(h); err != nil {
+		log.Printf("HTTPS non démarré : %v", err)
+	}
+	hs := &http.Server{Addr: *addr, Handler: srv.Redirect(h), ReadHeaderTimeout: 10 * time.Second}
 	log.Printf("Azmo OS %s — Made by Azmo — %s (%s, %d Mo, profil %s) — écoute sur %s", version, hw.Model, hw.Arch, hw.RAMMB, hw.Profile, *addr)
 	log.Fatal(hs.ListenAndServe())
 }

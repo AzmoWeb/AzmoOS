@@ -3,6 +3,7 @@ import { api, onUnauthorized } from "./api/client";
 import type { Job, Perm, Status } from "./api/types";
 import { useUI } from "./components/overlay";
 import { actionLabel } from "./lib/human";
+import { t } from "./lib/i18n";
 
 interface SessionCtx {
   status: Status;
@@ -32,7 +33,7 @@ interface JobsCtx {
 const JCtx = createContext<JobsCtx>(null as unknown as JobsCtx);
 export const useJobs = () => useContext(JCtx);
 
-const targetName = (j: Job) => (j.kind === "app" ? `« ${j.target} »` : j.kind === "storage" ? `du disque ${j.target}` : "");
+const targetName = (j: Job) => (j.kind === "app" ? `« ${j.target} »` : j.kind === "storage" ? t("du disque {0}", j.target) : "");
 
 export function JobsProvider({ children }: { children: ReactNode }) {
   const { toast } = useUI();
@@ -51,7 +52,7 @@ export function JobsProvider({ children }: { children: ReactNode }) {
         const before = prev.current.get(j.id + j.start);
         if (before === "running" && j.status !== "running") {
           const what = `${actionLabel[j.action] ?? j.action} ${targetName(j)}`.trim();
-          toast(j.status === "done" ? `${what} : c'est fait ✨` : `${what} : ça a échoué. Regarde le détail dans le journal.`, j.status === "done" ? "good" : "bad");
+          toast(j.status === "done" ? t("{0} : c'est fait ✨", what) : t("{0} : ça a échoué. Regarde le détail dans le journal.", what), j.status === "done" ? "good" : "bad");
           listeners.current.forEach((l) => l(j));
         }
       }

@@ -13,17 +13,23 @@ import (
 
 	"github.com/azmoweb/azmoos/internal/auth"
 	"github.com/azmoweb/azmoos/internal/backup"
+	"github.com/azmoweb/azmoos/internal/backupsched"
 	"github.com/azmoweb/azmoos/internal/config"
 	"github.com/azmoweb/azmoos/internal/docker"
 	"github.com/azmoweb/azmoos/internal/events"
 	"github.com/azmoweb/azmoos/internal/files"
 	"github.com/azmoweb/azmoos/internal/jobs"
+	"github.com/azmoweb/azmoos/internal/notify"
 	"github.com/azmoweb/azmoos/internal/shares"
 	"github.com/azmoweb/azmoos/internal/storage"
 	"github.com/azmoweb/azmoos/internal/store"
 	"github.com/azmoweb/azmoos/internal/system"
+	"github.com/azmoweb/azmoos/internal/terminal"
+	"github.com/azmoweb/azmoos/internal/tlsmgr"
 	"github.com/azmoweb/azmoos/internal/updater"
 )
+
+var timeNow = time.Now
 
 // Server regroupe tous les modules.
 type Server struct {
@@ -43,6 +49,14 @@ type Server struct {
 	Monitor  *system.Monitor
 	Hardware system.Hardware
 	Web      fs.FS
+
+	// v0.3
+	Notify       *notify.Center
+	Terminal     *terminal.Manager
+	TLS          *tlsmgr.Manager
+	Sched        *backupsched.Scheduler
+	HTTPSAddr    string
+	HTTPSHandler http.Handler // gestionnaire servi en HTTPS (le même que HTTP, sans redirection)
 }
 
 func writeJSON(w http.ResponseWriter, code int, v any) {
@@ -104,6 +118,7 @@ func (s *Server) Handler() http.Handler {
 	s.routesStorage(handle)
 	s.routesNetwork(handle)
 	s.routesAdmin(handle)
+	s.routesV3(handle)
 	mux.Handle("/api/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		fail(w, 404, errors.New("route inconnue"))
 	}))

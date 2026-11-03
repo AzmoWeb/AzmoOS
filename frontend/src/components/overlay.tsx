@@ -2,6 +2,7 @@ import { createContext, useCallback, useContext, useEffect, useLayoutEffect, use
 import { createPortal } from "react-dom";
 import { X, CheckCircle2, XCircle, Info } from "lucide-react";
 import { Button, Field, Input, IconButton } from "./ui";
+import { t } from "../lib/i18n";
 
 /* ---------- Modale ---------- */
 
@@ -21,7 +22,7 @@ export function Modal({ title, sub, icon, onClose, children, footer, wide }: {
         <div className="modal-head">
           {icon}
           <div><h2>{title}</h2>{sub && <p>{sub}</p>}</div>
-          <IconButton label="Fermer" onClick={onClose}><X /></IconButton>
+          <IconButton label={t("Fermer")} onClick={onClose}><X /></IconButton>
         </div>
         <div className="modal-body">{children}</div>
         {footer && <div className="modal-foot">{footer}</div>}
@@ -104,8 +105,8 @@ export function UIProvider({ children }: { children: ReactNode }) {
 
   const toast = useCallback((text: string, kind: ToastKind = "info") => {
     const id = nextId++;
-    setToasts((t) => [...t, { id, kind, text }]);
-    setTimeout(() => setToasts((t) => t.filter((x) => x.id !== id)), kind === "bad" ? 6500 : 4200);
+    setToasts((list) => [...list, { id, kind, text }]);
+    setTimeout(() => setToasts((list) => list.filter((x) => x.id !== id)), kind === "bad" ? 6500 : 4200);
   }, []);
 
   const confirm = useCallback((o: ConfirmOpts) => new Promise<boolean>((resolve) => {
@@ -124,10 +125,10 @@ export function UIProvider({ children }: { children: ReactNode }) {
       {dialog}
       {createPortal(
         <div className="toasts" aria-live="polite">
-          {toasts.map((t) => (
-            <div key={t.id} className={`toast ${t.kind}`}>
-              {t.kind === "good" ? <CheckCircle2 /> : t.kind === "bad" ? <XCircle /> : <Info />}
-              <div>{t.text}</div>
+          {toasts.map((x) => (
+            <div key={x.id} className={`toast ${x.kind}`}>
+              {x.kind === "good" ? <CheckCircle2 /> : x.kind === "bad" ? <XCircle /> : <Info />}
+              <div>{x.text}</div>
             </div>
           ))}
         </div>,
@@ -142,13 +143,13 @@ function ConfirmDialog({ o, done }: { o: ConfirmOpts; done: (v: boolean) => void
   const blocked = !!o.typeToConfirm && typed !== o.typeToConfirm;
   return (
     <Modal title={o.title} onClose={() => done(false)} footer={<>
-      <Button variant="ghost" onClick={() => done(false)}>Annuler</Button>
-      <Button variant={o.danger ? "danger-solid" : "primary"} disabled={blocked} onClick={() => done(true)} autoFocus={!o.typeToConfirm}>{o.confirm ?? "Confirmer"}</Button>
+      <Button variant="ghost" onClick={() => done(false)}>{t("Annuler")}</Button>
+      <Button variant={o.danger ? "danger-solid" : "primary"} disabled={blocked} onClick={() => done(true)} autoFocus={!o.typeToConfirm}>{o.confirm ?? t("Confirmer")}</Button>
     </>}>
       <div className="muted" style={{ color: "var(--text-2)" }}>{o.body}</div>
       {o.typeToConfirm && (
         <div style={{ marginTop: 16 }}>
-          <Field label={<>Pour confirmer, tape <code>{o.typeToConfirm}</code></>}>
+          <Field label={<>{t("Pour confirmer, tape")} <code>{o.typeToConfirm}</code></>}>
             <Input value={typed} onChange={(e) => setTyped(e.target.value)} autoFocus />
           </Field>
         </div>
@@ -166,8 +167,8 @@ function PromptDialog({ o, done }: { o: PromptOpts; done: (v: string | null) => 
           <Input value={v} onChange={(e) => setV(e.target.value)} placeholder={o.placeholder} autoFocus onFocus={(e) => e.target.select()} />
         </Field>
         <div className="row" style={{ justifyContent: "flex-end" }}>
-          <Button type="button" variant="ghost" onClick={() => done(null)}>Annuler</Button>
-          <Button variant="primary" disabled={!v.trim()}>{o.confirm ?? "Valider"}</Button>
+          <Button type="button" variant="ghost" onClick={() => done(null)}>{t("Annuler")}</Button>
+          <Button variant="primary" disabled={!v.trim()}>{o.confirm ?? t("Valider")}</Button>
         </div>
       </form>
     </Modal>

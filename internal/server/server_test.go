@@ -11,15 +11,19 @@ import (
 
 	"github.com/azmoweb/azmoos/internal/auth"
 	"github.com/azmoweb/azmoos/internal/backup"
+	"github.com/azmoweb/azmoos/internal/backupsched"
 	"github.com/azmoweb/azmoos/internal/config"
 	"github.com/azmoweb/azmoos/internal/docker"
 	"github.com/azmoweb/azmoos/internal/events"
 	"github.com/azmoweb/azmoos/internal/files"
 	"github.com/azmoweb/azmoos/internal/jobs"
+	"github.com/azmoweb/azmoos/internal/notify"
 	"github.com/azmoweb/azmoos/internal/shares"
 	"github.com/azmoweb/azmoos/internal/storage"
 	"github.com/azmoweb/azmoos/internal/store"
 	"github.com/azmoweb/azmoos/internal/system"
+	"github.com/azmoweb/azmoos/internal/terminal"
+	"github.com/azmoweb/azmoos/internal/tlsmgr"
 	"github.com/azmoweb/azmoos/internal/updater"
 )
 
@@ -42,7 +46,14 @@ func newTestServer(t *testing.T) *httptest.Server {
 		Updater: updater.New("x/y", "test", "", r), Monitor: system.NewMonitor(data), Hardware: system.DetectHardware(),
 		Web: fstest.MapFS{"index.html": {Data: []byte("<html>azmo</html>")}},
 	}
-	return httptest.NewServer(s.Handler())
+	s.Notify = notify.New(cfg)
+	s.Terminal = &terminal.Manager{Max: 2}
+	s.TLS = tlsmgr.New(conf)
+	s.HTTPSAddr = "127.0.0.1:0"
+	s.Sched = &backupsched.Scheduler{Config: cfg, Backup: s.Backup, Jobs: r, Events: s.Events, Notify: s.Notify, DataDir: data}
+	h := s.Handler()
+	s.HTTPSHandler = h
+	return httptest.NewServer(s.Redirect(h))
 }
 
 type client struct {

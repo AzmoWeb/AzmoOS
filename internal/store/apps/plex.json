@@ -12,5 +12,11 @@
   "tagline": "Serveur multimédia populaire",
   "description": "Organisez et diffusez vos médias sur tous vos appareils.",
   "compose": "services:\n  plex:\n    image: lscr.io/linuxserver/plex:latest\n    container_name: plex\n    restart: unless-stopped\n    network_mode: host\n    environment:\n      - PUID={{PUID}}\n      - PGID={{PGID}}\n      - TZ={{TZ}}\n      - VERSION=docker\n    volumes:\n      - {{APPDATA}}/config:/config\n      - {{DATA}}/Media:/data/media\n",
-  "minRam": 2048
+  "minRam": 2048,
+  "i18n": {
+    "en": {
+      "tagline": "Popular media server",
+      "description": "Organize and stream your media to all your devices."
+    }
+  }
 }
