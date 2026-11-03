@@ -2,7 +2,7 @@
   "id": "syncthing",
   "name": "Syncthing",
   "category": "Cloud",
-  "icon": "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/syncthing.png",
+  "icon": "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/syncthing.png",
   "port": 8384,
   "arch": [
     "arm64",

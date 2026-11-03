@@ -2,7 +2,7 @@
   "id": "portainer",
   "name": "Portainer",
   "category": "Outils",
-  "icon": "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/portainer.png",
+  "icon": "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/portainer.png",
   "port": 9443,
   "scheme": "https",
   "arch": [

@@ -2,7 +2,7 @@
   "id": "duplicati",
   "name": "Duplicati",
   "category": "Sauvegarde",
-  "icon": "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/duplicati.png",
+  "icon": "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/duplicati.png",
   "port": 8200,
   "arch": [
     "arm64",

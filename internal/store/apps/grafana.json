@@ -2,7 +2,7 @@
   "id": "grafana",
   "name": "Grafana",
   "category": "Outils",
-  "icon": "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/grafana.png",
+  "icon": "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/grafana.png",
   "port": 3003,
   "arch": [
     "arm64",

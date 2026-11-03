@@ -2,7 +2,7 @@
   "id": "nextcloud",
   "name": "Nextcloud",
   "category": "Cloud",
-  "icon": "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/nextcloud.png",
+  "icon": "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/nextcloud.png",
   "port": 8443,
   "scheme": "https",
   "arch": [

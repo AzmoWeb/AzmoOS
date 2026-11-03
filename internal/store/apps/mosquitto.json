@@ -2,7 +2,7 @@
   "id": "mosquitto",
   "name": "Mosquitto",
   "category": "Domotique",
-  "icon": "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/mqtt.png",
+  "icon": "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/mqtt.png",
   "port": 0,
   "arch": [
     "arm64",

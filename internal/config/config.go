@@ -6,6 +6,7 @@ import (
 	"os"
 	"path/filepath"
 	"sync"
+	"time"
 )
 
 // Rôles disponibles.
@@ -66,10 +67,12 @@ func (c *Config) FindUser(name string) *User {
 
 // Store protège la config et la sauvegarde sur disque.
 type Store struct {
-	mu   sync.RWMutex
-	dir  string
-	path string
-	c    Config
+	mu      sync.RWMutex
+	dir     string
+	path    string
+	c       Config
+	modTime time.Time // date du fichier lors de la dernière lecture/écriture
+	size    int64     // taille du fichier lors de la dernière lecture/écriture
 }
 
 // Load lit (ou crée) la configuration.
@@ -116,10 +119,30 @@ func (s *Store) reload() error {
 	if c.Settings == nil {
 		c.Settings = map[string]string{}
 	}
+	var mt time.Time
+	var size int64
+	if st, err := os.Stat(s.path); err == nil {
+		mt, size = st.ModTime(), st.Size()
+	}
 	s.mu.Lock()
-	s.c = c
+	s.c, s.modTime, s.size = c, mt, size
 	s.mu.Unlock()
 	return nil
+}
+
+// syncExternal relit le fichier s'il a été modifié par un autre processus
+// (par exemple « azmod user add » pendant que le service tourne). Un simple stat : ~1 µs.
+func (s *Store) syncExternal() {
+	st, err := os.Stat(s.path)
+	if err != nil {
+		return
+	}
+	s.mu.RLock()
+	changed := !st.ModTime().Equal(s.modTime) || st.Size() != s.size
+	s.mu.RUnlock()
+	if changed {
+		_ = s.reload()
+	}
 }
 
 func stripSessions(b []byte) []byte {
@@ -140,6 +163,7 @@ func (s *Store) Reload() error { return s.reload() }
 
 // View exécute fn en lecture.
 func (s *Store) View(fn func(c *Config)) {
+	s.syncExternal()
 	s.mu.RLock()
 	defer s.mu.RUnlock()
 	fn(&s.c)
@@ -147,6 +171,7 @@ func (s *Store) View(fn func(c *Config)) {
 
 // Update exécute fn puis sauvegarde de façon atomique.
 func (s *Store) Update(fn func(c *Config) error) error {
+	s.syncExternal()
 	s.mu.Lock()
 	defer s.mu.Unlock()
 	if err := fn(&s.c); err != nil {
@@ -160,7 +185,13 @@ func (s *Store) Update(fn func(c *Config) error) error {
 	if err := os.WriteFile(tmp, b, 0o600); err != nil {
 		return err
 	}
-	return os.Rename(tmp, s.path)
+	if err := os.Rename(tmp, s.path); err != nil {
+		return err
+	}
+	if st, err := os.Stat(s.path); err == nil {
+		s.modTime, s.size = st.ModTime(), st.Size()
+	}
+	return nil
 }
 
 // Setting lit un réglage.

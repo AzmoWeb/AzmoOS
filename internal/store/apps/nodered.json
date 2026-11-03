@@ -2,7 +2,7 @@
   "id": "nodered",
   "name": "Node-RED",
   "category": "Domotique",
-  "icon": "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/node-red.png",
+  "icon": "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/node-red.png",
   "port": 1880,
   "arch": [
     "arm64",

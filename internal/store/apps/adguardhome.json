@@ -2,7 +2,7 @@
   "id": "adguardhome",
   "name": "AdGuard Home",
   "category": "Réseau",
-  "icon": "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/adguard-home.png",
+  "icon": "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/adguard-home.png",
   "port": 3000,
   "arch": [
     "arm64",

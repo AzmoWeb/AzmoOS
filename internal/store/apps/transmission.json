@@ -2,7 +2,7 @@
   "id": "transmission",
   "name": "Transmission",
   "category": "Téléchargement",
-  "icon": "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/transmission.png",
+  "icon": "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/transmission.png",
   "port": 9091,
   "arch": [
     "arm64",

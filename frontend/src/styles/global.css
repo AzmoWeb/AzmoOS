@@ -411,6 +411,7 @@ pre.logs {
   .hide-sm { display: none !important; }
   .search .input { min-width: 0; }
   .search { width: 100%; }
+  .page-head .actions { margin-left: 0; width: 100%; }
 }
 @media (max-width: 520px) {
   .app-grid { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 12px; }
@@ -418,4 +419,9 @@ pre.logs {
   .modal-head, .modal-body { padding-left: 18px; padding-right: 18px; }
   .modal-foot { padding: 0 18px 18px; }
   .metric-value { font-size: 28px; }
+}
+@media (max-width: 640px) {
+  .store-hero { padding: 22px 20px; }
+  .store-hero::after { display: none; }
+  .store-hero h2 { font-size: 21px; }
 }

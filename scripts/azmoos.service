@@ -1,6 +1,6 @@
 [Unit]
 Description=Azmo OS — serveur personnel (Made by Azmo)
-Documentation=https://github.com/azmoweb/azmoos
+Documentation=https://github.com/AzmoWeb/AzmoOS
 After=network-online.target docker.service
 Wants=network-online.target docker.service
 

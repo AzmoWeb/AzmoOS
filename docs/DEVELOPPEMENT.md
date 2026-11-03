@@ -66,7 +66,7 @@ Crée `internal/store/apps/<id>.json` :
   "tagline": "Une phrase courte",
   "description": "Ce que fait l'app, pour qui.",
   "category": "Outils",
-  "icon": "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/monapp.png",
+  "icon": "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/monapp.png",
   "port": 8123,
   "arch": ["arm64", "amd64"],
   "minRam": 512,

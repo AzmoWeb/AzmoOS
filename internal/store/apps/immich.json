@@ -2,7 +2,7 @@
   "id": "immich",
   "name": "Immich",
   "category": "Multimédia",
-  "icon": "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/immich.png",
+  "icon": "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/immich.png",
   "port": 2283,
   "arch": [
     "arm64",

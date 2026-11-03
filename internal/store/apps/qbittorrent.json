@@ -2,7 +2,7 @@
   "id": "qbittorrent",
   "name": "qBittorrent",
   "category": "Téléchargement",
-  "icon": "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/qbittorrent.png",
+  "icon": "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/qbittorrent.png",
   "port": 8090,
   "arch": [
     "arm64",

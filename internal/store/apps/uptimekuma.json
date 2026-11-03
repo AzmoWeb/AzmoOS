@@ -2,7 +2,7 @@
   "id": "uptimekuma",
   "name": "Uptime Kuma",
   "category": "Outils",
-  "icon": "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/uptime-kuma.png",
+  "icon": "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/uptime-kuma.png",
   "port": 3001,
   "arch": [
     "arm64",

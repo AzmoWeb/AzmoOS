@@ -1,0 +1,16 @@
+name: 💡 Proposer une idée
+description: Une fonctionnalité ou une application à ajouter
+labels: [idée]
+body:
+  - type: textarea
+    id: idea
+    attributes:
+      label: Ton idée
+      description: Qu'est-ce qui te manque ? À quoi ça servirait ?
+    validations:
+      required: true
+  - type: input
+    id: app
+    attributes:
+      label: Application concernée (si c'est une app pour l'App Store)
+      placeholder: "Nom + lien vers l'image Docker"

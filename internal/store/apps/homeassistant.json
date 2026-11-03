@@ -2,7 +2,7 @@
   "id": "homeassistant",
   "name": "Home Assistant",
   "category": "Domotique",
-  "icon": "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/home-assistant.png",
+  "icon": "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/home-assistant.png",
   "port": 8123,
   "arch": [
     "arm64",

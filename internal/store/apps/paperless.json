@@ -2,7 +2,7 @@
   "id": "paperless",
   "name": "Paperless-ngx",
   "category": "Outils",
-  "icon": "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/paperless-ngx.png",
+  "icon": "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/paperless-ngx.png",
   "port": 8010,
   "arch": [
     "arm64",

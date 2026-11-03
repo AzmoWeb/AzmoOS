@@ -2,7 +2,7 @@
   "id": "plex",
   "name": "Plex",
   "category": "Multimédia",
-  "icon": "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/plex.png",
+  "icon": "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/plex.png",
   "port": 32400,
   "path": "/web",
   "arch": [

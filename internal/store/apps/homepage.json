@@ -2,7 +2,7 @@
   "id": "homepage",
   "name": "Homepage",
   "category": "Outils",
-  "icon": "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/homepage.png",
+  "icon": "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/homepage.png",
   "port": 3004,
   "arch": [
     "arm64",

@@ -2,7 +2,7 @@
   "id": "wgeasy",
   "name": "WireGuard Easy",
   "category": "Réseau",
-  "icon": "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/wireguard.png",
+  "icon": "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/wireguard.png",
   "port": 51821,
   "arch": [
     "arm64",

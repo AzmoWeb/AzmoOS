@@ -2,7 +2,7 @@
   "id": "npm",
   "name": "Nginx Proxy Manager",
   "category": "Réseau",
-  "icon": "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/nginx-proxy-manager.png",
+  "icon": "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/nginx-proxy-manager.png",
   "port": 81,
   "arch": [
     "arm64",

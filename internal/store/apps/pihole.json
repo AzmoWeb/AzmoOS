@@ -2,7 +2,7 @@
   "id": "pihole",
   "name": "Pi-hole",
   "category": "Réseau",
-  "icon": "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/pi-hole.png",
+  "icon": "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/pi-hole.png",
   "port": 8081,
   "path": "/admin",
   "arch": [

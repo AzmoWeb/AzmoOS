@@ -2,7 +2,7 @@
   "id": "tailscale",
   "name": "Tailscale",
   "category": "Réseau",
-  "icon": "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/tailscale.png",
+  "icon": "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/tailscale.png",
   "port": 0,
   "arch": [
     "arm64",

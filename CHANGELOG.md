@@ -2,6 +2,9 @@
 
 ## v0.2.0 — « Humain »
 
+- **Installation en une commande par SSH** qui pose les questions (nom, utilisateur, mot de passe, nom du Pi) : on se connecte directement sur l'IP locale.
+- Commandes `azmod user list|add|passwd|delete`, prises en compte à chaud par le service.
+
 - Nouvelle interface **React + TypeScript**, design chaleureux, thème sombre/clair, mobile.
 - **Assistant de premier démarrage** (compte, nom du Pi, fuseau, Wi-Fi) et point d'accès Wi-Fi de secours.
 - **Multi-utilisateurs** avec rôles et permissions, sessions par appareil.
@@ -15,6 +18,7 @@
 - **Adaptation au matériel** : profils léger / standard / performance, compatibilité des apps.
 - Conteneurs : ressources, volumes, images, ménage.
 - 25 applications au catalogue (ajout de Tailscale, Immich, Paperless-ngx ; retrait de File Browser, archivé par ses auteurs).
+- Icônes du catalogue : passage au dépôt maintenu homarr-labs/dashboard-icons.
 - Correctif : les dossiers des apps sont créés pour l'utilisateur 1000 (plantages de certaines apps).
 
 ## v0.1.0

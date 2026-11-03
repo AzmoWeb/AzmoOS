@@ -2,7 +2,7 @@
   "id": "vaultwarden",
   "name": "Vaultwarden",
   "category": "Sécurité",
-  "icon": "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/vaultwarden.png",
+  "icon": "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/vaultwarden.png",
   "port": 8222,
   "arch": [
     "arm64",

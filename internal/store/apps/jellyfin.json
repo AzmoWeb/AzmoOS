@@ -2,7 +2,7 @@
   "id": "jellyfin",
   "name": "Jellyfin",
   "category": "Multimédia",
-  "icon": "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/jellyfin.png",
+  "icon": "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/jellyfin.png",
   "port": 8096,
   "arch": [
     "arm64",

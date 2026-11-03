@@ -2,7 +2,7 @@
   "id": "gitea",
   "name": "Gitea",
   "category": "Développement",
-  "icon": "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/gitea.png",
+  "icon": "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/gitea.png",
   "port": 3002,
   "arch": [
     "arm64",

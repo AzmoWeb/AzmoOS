@@ -2,7 +2,7 @@
   "id": "codeserver",
   "name": "Code Server",
   "category": "Développement",
-  "icon": "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/vscode.png",
+  "icon": "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/vscode.png",
   "port": 8543,
   "arch": [
     "arm64",

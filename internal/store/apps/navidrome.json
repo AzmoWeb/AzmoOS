@@ -2,7 +2,7 @@
   "id": "navidrome",
   "name": "Navidrome",
   "category": "Multimédia",
-  "icon": "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/navidrome.png",
+  "icon": "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/navidrome.png",
   "port": 4533,
   "arch": [
     "arm64",

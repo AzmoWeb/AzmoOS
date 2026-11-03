@@ -32,12 +32,19 @@ import (
 var version = "dev"
 
 func main() {
+	if len(os.Args) > 1 && os.Args[1] == "user" {
+		os.Exit(runUser(os.Args[2:]))
+	}
+	flag.Usage = func() {
+		fmt.Fprintf(os.Stderr, "Azmo OS %s — Made by Azmo\n\nUsage :\n  azmod [options]        lance le serveur\n  azmod user …           gère les comptes (azmod user help)\n\nOptions :\n", version)
+		flag.PrintDefaults()
+	}
 	addr := flag.String("addr", ":80", "adresse d'écoute")
 	dataDir := flag.String("data", "/DATA", "dossier des données utilisateur")
 	confDir := flag.String("config", "/etc/azmoos", "dossier de configuration")
 	webDir := flag.String("web", "/usr/share/azmoos/web", "interface web (si absente : version embarquée)")
 	sock := flag.String("docker", "/var/run/docker.sock", "socket Docker")
-	repo := flag.String("repo", "azmoweb/azmoos", "dépôt GitHub des mises à jour")
+	repo := flag.String("repo", "AzmoWeb/AzmoOS", "dépôt GitHub des mises à jour")
 	showVersion := flag.Bool("version", false, "affiche la version")
 	flag.Parse()
 
