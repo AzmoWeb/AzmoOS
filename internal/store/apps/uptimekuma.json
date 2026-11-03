@@ -11,5 +11,6 @@
   ],
   "tagline": "Surveillance de services",
   "description": "Surveillez vos sites et services, avec alertes.",
-  "compose": "services:\n  uptimekuma:\n    image: louislam/uptime-kuma:1\n    container_name: uptimekuma\n    restart: unless-stopped\n    ports:\n      - \"3001:3001\"\n    volumes:\n      - {{APPDATA}}/data:/app/data\n"
+  "compose": "services:\n  uptimekuma:\n    image: louislam/uptime-kuma:1\n    container_name: uptimekuma\n    restart: unless-stopped\n    ports:\n      - \"3001:3001\"\n    volumes:\n      - {{APPDATA}}/data:/app/data\n",
+  "minRam": 512
 }

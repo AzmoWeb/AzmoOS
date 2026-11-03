@@ -1,0 +1,16 @@
+{
+  "id": "immich",
+  "name": "Immich",
+  "category": "Multimédia",
+  "icon": "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/immich.png",
+  "port": 2283,
+  "arch": [
+    "arm64",
+    "amd64"
+  ],
+  "minRam": 4096,
+  "tagline": "Tes photos, comme Google Photos",
+  "description": "Sauvegarde automatique des photos et vidéos de ton téléphone, reconnaissance faciale, albums partagés.",
+  "notes": "Gourmand : idéal sur Pi 5 4/8 Go avec un SSD. Change DB_PASSWORD avant d'installer.",
+  "compose": "services:\n  immich-server:\n    image: ghcr.io/immich-app/immich-server:release\n    container_name: immich_server\n    restart: unless-stopped\n    environment:\n      - DB_HOSTNAME=immich-db\n      - DB_USERNAME=postgres\n      - DB_PASSWORD=azmoos-change-me\n      - DB_DATABASE_NAME=immich\n      - REDIS_HOSTNAME=immich-redis\n      - TZ={{TZ}}\n    ports:\n      - \"2283:2283\"\n    volumes:\n      - {{DATA}}/Photos:/usr/src/app/upload\n      - /etc/localtime:/etc/localtime:ro\n    depends_on:\n      - immich-redis\n      - immich-db\n  immich-machine-learning:\n    image: ghcr.io/immich-app/immich-machine-learning:release\n    container_name: immich_machine_learning\n    restart: unless-stopped\n    volumes:\n      - {{APPDATA}}/model-cache:/cache\n  immich-redis:\n    image: docker.io/valkey/valkey:8-bookworm\n    container_name: immich_redis\n    restart: unless-stopped\n  immich-db:\n    image: ghcr.io/immich-app/postgres:14-vectorchord0.4.3-pgvectors0.2.0\n    container_name: immich_postgres\n    restart: unless-stopped\n    environment:\n      - POSTGRES_PASSWORD=azmoos-change-me\n      - POSTGRES_USER=postgres\n      - POSTGRES_DB=immich\n      - POSTGRES_INITDB_ARGS=--data-checksums\n    volumes:\n      - {{APPDATA}}/postgres:/var/lib/postgresql/data\n    shm_size: 128mb\n"
+}

@@ -11,5 +11,6 @@
   ],
   "tagline": "La maison connectée",
   "description": "Contrôlez et automatisez tous vos appareils domotiques en local.",
-  "compose": "services:\n  homeassistant:\n    image: ghcr.io/home-assistant/home-assistant:stable\n    container_name: homeassistant\n    restart: unless-stopped\n    privileged: true\n    network_mode: host\n    environment:\n      - TZ={{TZ}}\n    volumes:\n      - {{APPDATA}}/config:/config\n      - /run/dbus:/run/dbus:ro\n"
+  "compose": "services:\n  homeassistant:\n    image: ghcr.io/home-assistant/home-assistant:stable\n    container_name: homeassistant\n    restart: unless-stopped\n    privileged: true\n    network_mode: host\n    environment:\n      - TZ={{TZ}}\n    volumes:\n      - {{APPDATA}}/config:/config\n      - /run/dbus:/run/dbus:ro\n",
+  "minRam": 1024
 }

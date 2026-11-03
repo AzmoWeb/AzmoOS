@@ -1,4 +1,8 @@
 avahi-daemon
 curl
 ca-certificates
+samba
+ufw
+exfatprogs
+parted
 htop

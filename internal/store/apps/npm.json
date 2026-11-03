@@ -11,5 +11,6 @@
   "tagline": "Reverse proxy + HTTPS",
   "description": "Exposez vos services avec des certificats Let's Encrypt en quelques clics.",
   "notes": "AzmoOS occupe le port 80 : NPM écoute sur 8880 (HTTP) et 4443 (HTTPS), changez si besoin. Identifiants : admin@example.com / changeme",
-  "compose": "services:\n  npm:\n    image: jc21/nginx-proxy-manager:latest\n    container_name: npm\n    restart: unless-stopped\n    ports:\n      - \"8880:80\"\n      - \"4443:443\"\n      - \"81:81\"\n    volumes:\n      - {{APPDATA}}/data:/data\n      - {{APPDATA}}/letsencrypt:/etc/letsencrypt\n"
+  "compose": "services:\n  npm:\n    image: jc21/nginx-proxy-manager:latest\n    container_name: npm\n    restart: unless-stopped\n    ports:\n      - \"8880:80\"\n      - \"4443:443\"\n      - \"81:81\"\n    volumes:\n      - {{APPDATA}}/data:/data\n      - {{APPDATA}}/letsencrypt:/etc/letsencrypt\n",
+  "minRam": 512
 }

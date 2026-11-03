@@ -4,7 +4,6 @@ package files
 import (
 	"errors"
 	"io"
-	"mime/multipart"
 	"os"
 	"path/filepath"
 	"sort"
@@ -110,8 +109,9 @@ func (f *FS) Delete(path string) error {
 	return os.RemoveAll(p)
 }
 
-func (f *FS) Save(dir string, fh *multipart.FileHeader) error {
-	name := filepath.Base(fh.Filename)
+// SaveStream enregistre un fichier envoyé (sans le charger en mémoire).
+func (f *FS) SaveStream(dir, filename string, src io.Reader) error {
+	name := filepath.Base(filename)
 	if !validName(name) {
 		return errors.New("nom invalide")
 	}
@@ -119,18 +119,41 @@ func (f *FS) Save(dir string, fh *multipart.FileHeader) error {
 	if err != nil {
 		return err
 	}
-	src, err := fh.Open()
-	if err != nil {
-		return err
-	}
-	defer src.Close()
-	dst, err := os.Create(p)
+	tmp := p + ".azmo-upload"
+	dst, err := os.Create(tmp)
 	if err != nil {
 		return err
 	}
 	if _, err := io.Copy(dst, src); err != nil {
 		dst.Close()
+		os.Remove(tmp)
 		return err
 	}
-	return dst.Close()
+	if err := dst.Close(); err != nil {
+		return err
+	}
+	return os.Rename(tmp, p)
+}
+
+// Move déplace un fichier ou dossier dans un autre dossier.
+func (f *FS) Move(path, toDir string) error {
+	src, err := f.Resolve(path)
+	if err != nil || src == f.root {
+		return ErrOutside
+	}
+	dst, err := f.Resolve(toDir)
+	if err != nil {
+		return err
+	}
+	if st, err := os.Stat(dst); err != nil || !st.IsDir() {
+		return errors.New("le dossier de destination n'existe pas")
+	}
+	if strings.HasPrefix(dst+string(os.PathSeparator), src+string(os.PathSeparator)) {
+		return errors.New("impossible de déplacer un dossier dans lui-même")
+	}
+	target := filepath.Join(dst, filepath.Base(src))
+	if _, err := os.Stat(target); err == nil {
+		return errors.New("un élément du même nom existe déjà à destination")
+	}
+	return os.Rename(src, target)
 }

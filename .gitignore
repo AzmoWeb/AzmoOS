@@ -1,5 +1,11 @@
-dist/
+/dist/
 .pi-gen/
 image/stage-azmo/01-azmoos/files/azmod
 image/stage-azmo/01-azmoos/files/azmoos.service
 .dev/
+web/dist/*
+!web/dist/.keep
+frontend/node_modules/
+frontend/*.tsbuildinfo
+image/stage-azmo/01-azmoos/files/azmoos-hotspot.*
+image/stage-azmo/01-azmoos/files/web/

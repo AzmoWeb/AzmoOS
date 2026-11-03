@@ -12,5 +12,6 @@
   "tagline": "DNS anti-pub et anti-traqueurs",
   "description": "Alternative moderne à Pi-hole, avec DNS-over-HTTPS.",
   "notes": "Pendant l'assistant, choisissez le port 3000 pour l'interface web (le port 80 est utilisé par AzmoOS).",
-  "compose": "services:\n  adguardhome:\n    image: adguard/adguardhome:latest\n    container_name: adguardhome\n    restart: unless-stopped\n    ports:\n      - \"53:53/tcp\"\n      - \"53:53/udp\"\n      - \"3000:3000\"\n    volumes:\n      - {{APPDATA}}/work:/opt/adguardhome/work\n      - {{APPDATA}}/conf:/opt/adguardhome/conf\n"
+  "compose": "services:\n  adguardhome:\n    image: adguard/adguardhome:latest\n    container_name: adguardhome\n    restart: unless-stopped\n    ports:\n      - \"53:53/tcp\"\n      - \"53:53/udp\"\n      - \"3000:3000\"\n    volumes:\n      - {{APPDATA}}/work:/opt/adguardhome/work\n      - {{APPDATA}}/conf:/opt/adguardhome/conf\n",
+  "minRam": 256
 }

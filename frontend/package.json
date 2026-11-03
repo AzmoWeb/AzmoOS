@@ -1,0 +1,27 @@
+{
+  "name": "azmoos-web",
+  "private": true,
+  "version": "0.2.0",
+  "description": "Interface web d'Azmo OS — Made by Azmo",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "typecheck": "tsc -b",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@fontsource-variable/plus-jakarta-sans": "5.2.8",
+    "lucide-react": "0.555.0",
+    "react": "19.2.0",
+    "react-dom": "19.2.0",
+    "react-router-dom": "7.9.6"
+  },
+  "devDependencies": {
+    "@types/react": "19.2.7",
+    "@types/react-dom": "19.2.3",
+    "@vitejs/plugin-react": "5.1.1",
+    "typescript": "5.9.3",
+    "vite": "7.2.4"
+  }
+}

@@ -2,19 +2,17 @@
 package store
 
 import (
-	"bytes"
 	"embed"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"os"
-	"os/exec"
 	"path/filepath"
 	"regexp"
 	"sort"
 	"strings"
-	"sync"
-	"time"
+
+	"github.com/azmoweb/azmoos/internal/jobs"
 )
 
 //go:embed apps/*.json
@@ -36,16 +34,10 @@ type App struct {
 	Arch        []string `json:"arch"`
 	Compose     string   `json:"compose"`
 	Notes       string   `json:"notes,omitempty"`
+	MinRAM      int      `json:"minRam,omitempty"` // Mo conseillés
+	Website     string   `json:"website,omitempty"`
 	Installed   bool     `json:"installed"`
 	Custom      bool     `json:"custom,omitempty"`
-}
-
-type Job struct {
-	App    string    `json:"app"`
-	Action string    `json:"action"`
-	Status string    `json:"status"` // running, done, error
-	Log    string    `json:"log"`
-	Start  time.Time `json:"start"`
 }
 
 type Store struct {
@@ -53,18 +45,17 @@ type Store struct {
 	appsDir string // /DATA/AppData/.azmoos/apps
 	tz      string
 	catalog map[string]App
-	mu      sync.Mutex
-	jobs    map[string]*Job
+	jobs    *jobs.Runner
 }
 
 var idRe = regexp.MustCompile(`^[a-z0-9][a-z0-9-]{0,40}$`)
 
-func New(dataDir string) (*Store, error) {
+func New(dataDir string, runner *jobs.Runner) (*Store, error) {
 	s := &Store{
 		dataDir: dataDir,
 		appsDir: filepath.Join(dataDir, "AppData", ".azmoos", "apps"),
 		catalog: map[string]App{},
-		jobs:    map[string]*Job{},
+		jobs:    runner,
 		tz:      detectTZ(),
 	}
 	entries, err := catalogFS.ReadDir("apps")
@@ -160,52 +151,26 @@ func (s *Store) Compose(id string) (string, error) {
 	return string(b), err
 }
 
-// Jobs renvoie l'état des opérations en cours/récentes.
-func (s *Store) Jobs() []Job {
-	s.mu.Lock()
-	defer s.mu.Unlock()
-	out := []Job{}
-	for _, j := range s.jobs {
-		out = append(out, *j)
-	}
-	sort.Slice(out, func(i, k int) bool { return out[i].Start.After(out[k].Start) })
-	return out
-}
+// AppsDir renvoie le dossier des définitions d'apps installées.
+func (s *Store) AppsDir() string { return s.appsDir }
 
 func (s *Store) startJob(id, action string, steps [][]string) error {
-	s.mu.Lock()
-	if j, ok := s.jobs[id]; ok && j.Status == "running" {
-		s.mu.Unlock()
-		return errors.New("une opération est déjà en cours pour cette app")
+	st := make([]jobs.Step, len(steps))
+	for i, a := range steps {
+		st[i] = jobs.Step{Cmd: append([]string{"docker"}, a...)}
 	}
-	j := &Job{App: id, Action: action, Status: "running", Start: time.Now()}
-	s.jobs[id] = j
-	s.mu.Unlock()
-
-	go func() {
-		for _, args := range steps {
-			cmd := exec.Command("docker", args...)
-			var buf bytes.Buffer
-			cmd.Stdout, cmd.Stderr = &buf, &buf
-			err := cmd.Run()
-			s.mu.Lock()
-			j.Log += "$ docker " + strings.Join(args, " ") + "\n" + buf.String()
-			if err != nil {
-				j.Status = "error"
-				j.Log += "\nErreur: " + err.Error()
-				s.mu.Unlock()
-				return
-			}
-			s.mu.Unlock()
-		}
-		s.mu.Lock()
-		j.Status = "done"
-		s.mu.Unlock()
-		if action == "uninstall" {
+	return s.jobs.Start("app", id, action, st, func(ok bool) {
+		if ok && action == "uninstall" {
 			_ = os.RemoveAll(filepath.Join(s.appsDir, id))
 		}
-	}()
-	return nil
+	})
+}
+
+// Redeploy relance toutes les apps installées (après une restauration).
+func (s *Store) Redeploy() {
+	for _, a := range s.Installed() {
+		_ = s.startJob(a.ID, "install", [][]string{s.composeArgs(a.ID, "up", "-d", "--remove-orphans")})
+	}
 }
 
 func (s *Store) composeArgs(id string, extra ...string) []string {
@@ -232,7 +197,7 @@ func (s *Store) Install(id, compose string, meta *App) error {
 	if err := os.MkdirAll(dir, 0o755); err != nil {
 		return err
 	}
-	_ = os.MkdirAll(filepath.Join(s.dataDir, "AppData", id), 0o755)
+	s.prepareDirs(id, compose)
 	if err := os.WriteFile(s.composePath(id), []byte(compose), 0o644); err != nil {
 		return err
 	}
@@ -245,6 +210,32 @@ func (s *Store) Install(id, compose string, meta *App) error {
 		s.composeArgs(id, "pull"),
 		s.composeArgs(id, "up", "-d", "--remove-orphans"),
 	})
+}
+
+// AppUID/AppGID sont l'utilisateur sous lequel tournent les apps (PUID/PGID).
+const AppUID, AppGID = 1000, 1000
+
+var bindRe = regexp.MustCompile(`(?m)^\s*-\s*"?(/[^:"\s]+):`)
+
+// prepareDirs crée les dossiers montés par l'app avant Docker. Sinon Docker les crée
+// en root et les apps qui tournent avec l'utilisateur 1000 ne peuvent pas y écrire.
+func (s *Store) prepareDirs(id, compose string) {
+	appData := filepath.Join(s.dataDir, "AppData", id)
+	dirs := []string{appData}
+	for _, m := range bindRe.FindAllStringSubmatch(compose, -1) {
+		p := filepath.Clean(m[1])
+		if strings.HasPrefix(p, appData+"/") && filepath.Ext(p) == "" {
+			dirs = append(dirs, p)
+		}
+	}
+	for _, d := range dirs {
+		if _, err := os.Stat(d); err == nil {
+			continue // dossier existant : on ne touche pas aux droits
+		}
+		if os.MkdirAll(d, 0o755) == nil {
+			_ = os.Chown(d, AppUID, AppGID)
+		}
+	}
 }
 
 // Update télécharge les nouvelles images et recrée les conteneurs.

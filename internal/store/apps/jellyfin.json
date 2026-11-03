@@ -10,5 +10,6 @@
   ],
   "tagline": "Votre Netflix personnel",
   "description": "Serveur multimédia libre : films, séries, musique, accessible partout. Accélération matérielle possible sur Raspberry Pi.",
-  "compose": "services:\n  jellyfin:\n    image: lscr.io/linuxserver/jellyfin:latest\n    container_name: jellyfin\n    restart: unless-stopped\n    environment:\n      - PUID={{PUID}}\n      - PGID={{PGID}}\n      - TZ={{TZ}}\n    ports:\n      - \"8096:8096\"\n    volumes:\n      - {{APPDATA}}/config:/config\n      - {{DATA}}/Media:/data/media\n"
+  "compose": "services:\n  jellyfin:\n    image: lscr.io/linuxserver/jellyfin:latest\n    container_name: jellyfin\n    restart: unless-stopped\n    environment:\n      - PUID={{PUID}}\n      - PGID={{PGID}}\n      - TZ={{TZ}}\n    ports:\n      - \"8096:8096\"\n    volumes:\n      - {{APPDATA}}/config:/config\n      - {{DATA}}/Media:/data/media\n",
+  "minRam": 2048
 }

@@ -11,5 +11,6 @@
   ],
   "tagline": "Broker MQTT",
   "description": "Broker MQTT léger pour vos objets connectés (port 1883).",
-  "compose": "services:\n  mosquitto:\n    image: eclipse-mosquitto:2\n    container_name: mosquitto\n    restart: unless-stopped\n    command: mosquitto -c /mosquitto-no-auth.conf\n    ports:\n      - \"1883:1883\"\n    volumes:\n      - {{APPDATA}}/data:/mosquitto/data\n      - {{APPDATA}}/log:/mosquitto/log\n"
+  "compose": "services:\n  mosquitto:\n    image: eclipse-mosquitto:2\n    container_name: mosquitto\n    restart: unless-stopped\n    command: mosquitto -c /mosquitto-no-auth.conf\n    ports:\n      - \"1883:1883\"\n    volumes:\n      - {{APPDATA}}/data:/mosquitto/data\n      - {{APPDATA}}/log:/mosquitto/log\n",
+  "minRam": 64
 }

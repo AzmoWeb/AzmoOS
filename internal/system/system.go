@@ -12,6 +12,8 @@ import (
 	"sync"
 	"syscall"
 	"time"
+
+	"github.com/azmoweb/azmoos/internal/cmdutil"
 )
 
 type Disk struct {
@@ -34,8 +36,8 @@ type Stats struct {
 	Kernel     string    `json:"kernel"`
 	Arch       string    `json:"arch"`
 	Cores      int       `json:"cores"`
-	CPU        float64   `json:"cpu"`      // %
-	CPUFreqMHz int       `json:"cpuFreq"`  // MHz
+	CPU        float64   `json:"cpu"`     // %
+	CPUFreqMHz int       `json:"cpuFreq"` // MHz
 	Load       []float64 `json:"load"`
 	MemTotal   uint64    `json:"memTotal"`
 	MemUsed    uint64    `json:"memUsed"`
@@ -58,6 +60,17 @@ type Monitor struct {
 	rx, tx    uint64
 	dataDir   string
 	model, os string
+	history   []Point
+}
+
+// Point est un échantillon de l'historique (dernière heure).
+type Point struct {
+	T    int64   `json:"t"`
+	CPU  float64 `json:"cpu"`
+	Mem  float64 `json:"mem"`
+	Temp float64 `json:"temp"`
+	Rx   uint64  `json:"rx"`
+	Tx   uint64  `json:"tx"`
 }
 
 func NewMonitor(dataDir string) *Monitor {
@@ -66,10 +79,18 @@ func NewMonitor(dataDir string) *Monitor {
 	return m
 }
 
+// History renvoie l'historique récent (1 point toutes les 10 s, 1 heure max).
+func (m *Monitor) History() []Point {
+	m.mu.RLock()
+	defer m.mu.RUnlock()
+	return append([]Point(nil), m.history...)
+}
+
 func (m *Monitor) loop() {
 	idle0, total0 := readCPU()
 	rx0, tx0 := readNet()
 	t0 := time.Now()
+	tick := 0
 	for {
 		time.Sleep(2 * time.Second)
 		idle1, total1 := readCPU()
@@ -85,6 +106,23 @@ func (m *Monitor) loop() {
 		}
 		m.mu.Unlock()
 		idle0, total0, rx0, tx0, t0 = idle1, total1, rx1, tx1, time.Now()
+		if tick++; tick%5 == 0 {
+			mem := readMeminfo()
+			p := Point{T: time.Now().Unix(), Rx: m.rx, Tx: m.tx}
+			if mem["MemTotal"] > 0 {
+				p.Mem = 100 * float64(mem["MemTotal"]-mem["MemAvailable"]) / float64(mem["MemTotal"])
+			}
+			if t, err := strconv.ParseFloat(strings.TrimSpace(readFile("/sys/class/thermal/thermal_zone0/temp")), 64); err == nil {
+				p.Temp = t / 1000
+			}
+			m.mu.Lock()
+			p.CPU = m.cpu
+			m.history = append(m.history, p)
+			if len(m.history) > 360 {
+				m.history = m.history[1:]
+			}
+			m.mu.Unlock()
+		}
 	}
 }
 
@@ -239,18 +277,20 @@ func Power(action string) error {
 	return os.ErrInvalid
 }
 
-// SetHostname change le nom d'hôte.
+// SetHostname change le nom d'hôte (et /etc/hosts pour garder sudo rapide).
 func SetHostname(name string) error {
-	out, err := exec.Command("hostnamectl", "set-hostname", name).CombinedOutput()
-	if err != nil {
-		return &cmdErr{err, string(out)}
+	old, _ := os.Hostname()
+	if _, err := cmdutil.Run("hostnamectl", "set-hostname", name); err != nil {
+		return err
+	}
+	if b, err := os.ReadFile("/etc/hosts"); err == nil && old != "" {
+		lines := strings.Split(string(b), "\n")
+		for i, l := range lines {
+			if strings.HasPrefix(l, "127.0.1.1") {
+				lines[i] = "127.0.1.1\t" + name
+			}
+		}
+		_ = os.WriteFile("/etc/hosts", []byte(strings.Join(lines, "\n")), 0o644)
 	}
 	return nil
 }
-
-type cmdErr struct {
-	err error
-	out string
-}
-
-func (e *cmdErr) Error() string { return strings.TrimSpace(e.err.Error() + ": " + e.out) }

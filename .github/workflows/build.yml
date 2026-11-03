@@ -1,4 +1,4 @@
-name: Build AzmoOS
+name: Azmo OS
 
 on:
   push:
@@ -16,7 +16,8 @@ permissions:
   contents: write
 
 jobs:
-  binaries:
+  build:
+    name: Tests et binaires
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -25,12 +26,23 @@ jobs:
       - uses: actions/setup-go@v5
         with:
           go-version: "1.24"
-      - run: make test
-      - run: make build-all
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - name: Interface web
+        run: make web
+      - name: Tests
+        run: make test
+      - name: Binaires et archives
+        run: make release
       - uses: actions/upload-artifact@v4
         with:
-          name: azmod-binaries
-          path: dist/*
+          name: azmoos
+          path: |
+            dist/*
+            web/dist
       - name: Publier la release
         if: startsWith(github.ref, 'refs/tags/v')
         uses: softprops/action-gh-release@v2
@@ -39,24 +51,24 @@ jobs:
             dist/azmod-linux-arm64
             dist/azmod-linux-armv6
             dist/azmod-linux-amd64
+            dist/azmoos-web.tar.gz
+            dist/SHA256SUMS
             scripts/install.sh
           generate_release_notes: true
 
   image:
-    needs: binaries
+    name: Image Raspberry Pi
+    needs: build
     if: startsWith(github.ref, 'refs/tags/v') || inputs.image
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/download-artifact@v4
         with:
-          name: azmod-binaries
-          path: dist
-      - name: Préparer le stage AzmoOS
-        run: |
-          cp dist/azmod-linux-arm64 image/stage-azmo/01-azmoos/files/azmod
-          cp scripts/azmoos.service image/stage-azmo/01-azmoos/files/azmoos.service
-          chmod +x image/stage-azmo/*.sh image/stage-azmo/*/*.sh
+          name: azmoos
+          path: .
+      - name: Préparer le stage Azmo OS
+        run: ./image/prepare-stage.sh
       - uses: usimd/pi-gen-action@v1
         id: build
         with:
