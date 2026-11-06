@@ -28,6 +28,9 @@ type User struct {
 	Lang     string   `json:"lang,omitempty"`
 	// Fond d'écran du bureau : identifiant d'un préréglage, ou « custom » (image envoyée).
 	Wallpaper string `json:"wallpaper,omitempty"`
+	// Bureau : widgets affichés, dans l'ordre (nil = disposition par défaut), et pense-bête.
+	Widgets []string `json:"widgets,omitempty"`
+	Note    string   `json:"note,omitempty"`
 
 	// Double authentification (TOTP)
 	TOTPSecret   string   `json:"totpSecret,omitempty"`
@@ -115,6 +118,34 @@ type Backup struct {
 	LastSize  int64  `json:"lastSize,omitempty"`
 }
 
+// AppUpdates règle les mises à jour automatiques des applications.
+type AppUpdates struct {
+	Enabled   bool             `json:"enabled"`
+	Frequency string           `json:"frequency"` // daily, weekly
+	Hour      int              `json:"hour"`      // 0-23
+	Weekday   int              `json:"weekday"`   // 0 = dimanche
+	Exclude   []string         `json:"exclude"`   // apps à ne jamais mettre à jour seules
+	LastRun   int64            `json:"lastRun,omitempty"`
+	LastCheck int              `json:"lastCheck"`         // apps vérifiées au dernier passage
+	LastCount int              `json:"lastCount"`         // apps mises à jour au dernier passage
+	LastFail  int              `json:"lastFail"`          // échecs au dernier passage
+	History   []AppUpdateEntry `json:"history,omitempty"` // les plus récentes en premier
+}
+
+// AppUpdateEntry est le résultat de la mise à jour d'une app.
+type AppUpdateEntry struct {
+	App    string `json:"app"`
+	Name   string `json:"name"`
+	Time   int64  `json:"time"`
+	Result string `json:"result"` // updated, error
+	Error  string `json:"error,omitempty"`
+}
+
+// DefaultAppUpdates : désactivées, chaque nuit à 4 h si on les active.
+func DefaultAppUpdates() AppUpdates {
+	return AppUpdates{Frequency: "daily", Hour: 4, Weekday: 0, Exclude: []string{}}
+}
+
 // Config est le contenu de config.json.
 type Config struct {
 	Users    []*User             `json:"users"`
@@ -123,6 +154,7 @@ type Config struct {
 	Settings map[string]string   `json:"settings"`
 	Notify   *Notify             `json:"notify,omitempty"`
 	Backups  []Backup            `json:"backups,omitempty"`
+	AppUpd   *AppUpdates         `json:"appUpdates,omitempty"`
 
 	// Ancien format v0.1 (un seul compte) — migré automatiquement.
 	LegacyUser *User `json:"user,omitempty"`

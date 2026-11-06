@@ -147,6 +147,16 @@ recherche instantanée, lanceur de sections, et chaque outil qui s'ouvre comme u
 | <img src="docs/images/menu-application.webp" alt="Menu d'une application"> | <img src="docs/images/details-application.webp" alt="Détails d'une application"> |
 | **Clic droit… ou ⋮** : ouvrir, arrêter, mettre à jour | **Ressources, ports, volumes, journaux** |
 
+### Ton bureau, à ta façon
+
+Choisis tes widgets et leur ordre : horloge, santé du Pi, stockage, réseau, état des applications, pense-bête…
+Clique sur **Personnaliser**, puis ajoute, retire ou déplace (flèches ou glisser-déposer). C'est enregistré pour chaque compte.
+
+| | |
+|:---:|:---:|
+| <img src="docs/images/bureau-widgets.webp" alt="Bureau avec widgets personnalisés"> | <img src="docs/images/bureau-personnaliser.webp" alt="Personnaliser les widgets"> |
+| **Tes widgets** : applications et pense-bête en plus | **Personnaliser** : ajouter, retirer, déplacer |
+
 ### Choisis ton fond d'écran
 
 8 fonds Azmo, ou ta propre photo. Le thème clair et le thème sombre s'adaptent automatiquement.
@@ -172,6 +182,8 @@ recherche instantanée, lanceur de sections, et chaque outil qui s'ouvre comme u
 | **Notifications** dans la cloche | **Sur ton téléphone** : ntfy, Discord, Telegram |
 | <img src="docs/images/sauvegardes.webp" alt="Sauvegardes"> | <img src="docs/images/sauvegardes-planifier.webp" alt="Planifier une sauvegarde"> |
 | **Sauvegardes** automatiques et manuelles | **Planifier** vers un disque ou le cloud |
+| <img src="docs/images/mises-a-jour.webp" alt="Mises à jour"> | <img src="docs/images/mises-a-jour-apps.webp" alt="Mises à jour automatiques des applications"> |
+| **Mises à jour** d'Azmo OS et du système | **Apps mises à jour toutes seules**, la nuit |
 | <img src="docs/images/conteneurs.webp" alt="Conteneurs"> | <img src="docs/images/utilisateurs.webp" alt="Utilisateurs"> |
 | **Conteneurs, images et volumes Docker** | **Utilisateurs et permissions** |
 | <img src="docs/images/connexion.webp" alt="Connexion"> | <img src="docs/images/english-bureau.webp" alt="Interface en anglais"> |
@@ -202,6 +214,10 @@ et sections qui s'ouvrent en fenêtres. L'état de ton Pi en une phrase : *« To
 Azmo OS reconnaît ton Raspberry Pi et choisit un profil **léger**, **standard** ou **performance**.
 L'App Store te prévient (ou te protège) si une application est trop gourmande pour ton modèle.
 
+### 🧩 Widgets personnalisables
+Horloge, santé du Pi, stockage, réseau, **état des applications** et **pense-bête** : choisis ceux que tu veux
+et leur ordre. Chaque membre de la famille a son propre bureau.
+
 ### 🛍️ App Store en un clic
 25 applications prêtes à l'emploi, chacune isolée dans Docker. Une application personnalisée ?
 Colle son `docker-compose.yml`. Si une installation échoue, Azmo OS **t'explique pourquoi**
@@ -228,6 +244,11 @@ Administrateurs et membres, avec des permissions précises : gérer les apps, vo
 ### 💾 Sauvegardes et 🔄 mises à jour
 Sauvegarde et restauration de toute la configuration en un clic. Mises à jour d'Azmo OS
 (vérifiées par SHA-256) et du système, avec signalement quand un redémarrage est nécessaire.
+
+### ♻️ Applications mises à jour toutes seules
+Chaque nuit (ou chaque semaine), Azmo OS cherche une nouvelle version de tes applications et l'installe.
+Tes données sont gardées, une app déjà à jour n'est pas redémarrée, une app arrêtée reste arrêtée,
+et tu peux exclure celles que tu préfères mettre à jour toi-même. Une notification te dit ce qui a changé.
 
 ### 💻 Terminal web
 La ligne de commande de ton Pi directement dans le navigateur, même sur téléphone : barre de touches
@@ -372,8 +393,8 @@ Publier une version : `git tag v0.2.0 && git push origin v0.2.0`. GitHub Actions
 - [x] Double authentification et HTTPS local
 - [x] Notifications (température, disque plein, mises à jour…) jusque sur le téléphone
 - [x] Interface en anglais
-- [ ] Widgets personnalisables sur le bureau
-- [ ] Mises à jour automatiques des applications
+- [x] Widgets personnalisables sur le bureau
+- [x] Mises à jour automatiques des applications
 - [ ] Catalogue d'applications communautaire
 - [ ] Autres langues (espagnol, allemand…) : [les contributions sont les bienvenues](docs/DEVELOPPEMENT.md#traduire-azmo-os)
 

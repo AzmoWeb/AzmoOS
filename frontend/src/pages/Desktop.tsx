@@ -1,9 +1,9 @@
 // Le bureau : widgets à gauche, grille d'applications à droite, sur le fond d'écran.
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { Cpu, MemoryStick, Thermometer, HardDrive, ArrowDown, ArrowUp, Plus, Smile, AlertTriangle, Flame } from "lucide-react";
+import { Cpu, MemoryStick, Thermometer, HardDrive, ArrowDown, ArrowUp, Plus, Smile, AlertTriangle, Flame, SlidersHorizontal, ChevronUp, ChevronDown, X, GripVertical, Check, RotateCcw, Clock3, Activity, Network, Boxes, StickyNote } from "lucide-react";
 import { api } from "../api/client";
-import type { AppsResponse, SystemStats } from "../api/types";
+import type { AppsResponse, SystemStats, WidgetId } from "../api/types";
 import { usePoll } from "../hooks/usePoll";
 import { useSession } from "../session";
 import { bytes, pct, uptime } from "../lib/format";
@@ -12,6 +12,7 @@ import { locale, t } from "../lib/i18n";
 import { sections, SectionTile } from "../lib/sections";
 import { Sparkline } from "../components/Sparkline";
 import { Loading } from "../components/ui";
+import { useUI } from "../components/overlay";
 import { AppGrid } from "./Apps";
 
 function Clock() {
@@ -96,8 +97,60 @@ function NetworkWidget({ s, hist }: { s: SystemStats; hist: number[] }) {
   );
 }
 
+function AppsWidget({ data }: { data?: AppsResponse | null }) {
+  if (!data) return <section className="widget"><Loading /></section>;
+  const up = data.apps.filter((a) => a.state === "running");
+  const down = data.apps.filter((a) => a.state !== "running");
+  return (
+    <section className="widget">
+      <div className="widget-title"><Boxes /> {t("Applications")}</div>
+      <div className="apps-stats">
+        <Link to="/apps"><b className="mood-good">{up.length}</b><span>{t("en marche")}</span></Link>
+        <Link to="/apps"><b className={down.length ? "mood-warn" : ""}>{down.length}</b><span>{down.length > 1 ? t("arrêtées") : t("arrêtée")}</span></Link>
+      </div>
+      {down.length > 0 ? <div className="small muted">{t("À l'arrêt : {0}", down.slice(0, 3).map((a) => a.name).join(", ") + (down.length > 3 ? "…" : ""))}</div>
+        : data.apps.length > 0 && <div className="small muted">{t("Toutes tes applications tournent. 👌")}</div>}
+    </section>
+  );
+}
+
+function NoteWidget() {
+  const [text, setText] = useState<string | null>(null);
+  const [state, setState] = useState<"idle" | "saving" | "saved">("idle");
+  const timer = useRef<number>(undefined);
+  useEffect(() => { api.get<{ text: string }>("/api/me/note").then((r) => setText(r.text)).catch(() => setText("")); }, []);
+  const change = (v: string) => {
+    setText(v); setState("saving");
+    window.clearTimeout(timer.current);
+    timer.current = window.setTimeout(() => { api.put("/api/me/note", { text: v }).then(() => setState("saved")).catch(() => setState("idle")); }, 700);
+  };
+  return (
+    <section className="widget">
+      <div className="widget-title"><StickyNote /> {t("Pense-bête")}<span className="spacer" /><span className="small muted">{state === "saving" ? "…" : state === "saved" ? t("Enregistré ✓") : ""}</span></div>
+      {text === null ? <Loading /> : (
+        <textarea className="note-area" value={text} maxLength={4000} onChange={(e) => change(e.target.value)}
+          placeholder={t("Une idée, une liste de courses, le code du Wi-Fi des invités… C'est enregistré sur ton Pi.")} />
+      )}
+    </section>
+  );
+}
+
+const DEFAULT_WIDGETS: WidgetId[] = ["clock", "system", "storage", "network"];
+
+function widgetCatalog(): { id: WidgetId; label: string; desc: string; icon: React.ReactNode }[] {
+  return [
+    { id: "clock", label: t("Horloge"), desc: t("L'heure, la date et un petit mot."), icon: <Clock3 /> },
+    { id: "system", label: t("Système"), desc: t("Processeur, mémoire, température."), icon: <Activity /> },
+    { id: "storage", label: t("Stockage"), desc: t("La place libre sur tes disques."), icon: <HardDrive /> },
+    { id: "network", label: t("Réseau"), desc: t("Le débit en direct."), icon: <Network /> },
+    { id: "apps", label: t("Applications"), desc: t("Combien tournent, lesquelles sont arrêtées."), icon: <Boxes /> },
+    { id: "note", label: t("Pense-bête"), desc: t("Des notes rapides, gardées sur ton Pi."), icon: <StickyNote /> },
+  ];
+}
+
 export function Desktop() {
-  const { status, can } = useSession();
+  const { status, can, refresh } = useSession();
+  const { toast } = useUI();
   const hist = useRef<number[]>([]);
   const sys = usePoll(async () => {
     const s = await api.get<SystemStats>("/api/system");
@@ -108,12 +161,80 @@ export function Desktop() {
   const apps = usePoll(() => api.get<AppsResponse>("/api/apps"), 6000);
   const shortcuts = sections.filter((x) => x.desktop && (!x.perm || can(x.perm)));
   const s = sys.data;
+  const [widgets, setWidgets] = useState<WidgetId[]>(status.user?.widgets ?? DEFAULT_WIDGETS);
+  const [editing, setEditing] = useState(false);
+  const [dragging, setDragging] = useState<WidgetId | null>(null);
+
+  const save = useCallback((next: WidgetId[] | null) => {
+    setWidgets(next ?? DEFAULT_WIDGETS);
+    api.put("/api/me/widgets", { widgets: next }).then(() => refresh()).catch((e) => toast((e as Error).message, "bad"));
+  }, [refresh, toast]);
+  const move = (id: WidgetId, to: number) => {
+    const next = widgets.filter((w) => w !== id);
+    next.splice(Math.max(0, Math.min(next.length, to)), 0, id);
+    save(next);
+  };
+
+  const render = (id: WidgetId) => {
+    switch (id) {
+      case "clock": return <Clock />;
+      case "apps": return <AppsWidget data={apps.data} />;
+      case "note": return <NoteWidget />;
+    }
+    if (!s) return <section className="widget"><Loading /></section>;
+    if (id === "system") return <SystemWidget s={s} />;
+    if (id === "storage") return <StorageWidget s={s} />;
+    return <NetworkWidget s={s} hist={hist.current} />;
+  };
+  const catalog = widgetCatalog();
+  const hidden = catalog.filter((w) => !widgets.includes(w.id));
 
   return (
     <div className="desktop-grid">
-      <aside className="widgets">
-        <Clock />
-        {s ? <><SystemWidget s={s} /><StorageWidget s={s} /><NetworkWidget s={s} hist={hist.current} /></> : <section className="widget"><Loading /></section>}
+      <aside className={`widgets${editing ? " editing" : ""}`}>
+        {widgets.map((id, i) => editing ? (
+          <div key={id} className={`widget-slot${dragging === id ? " dragging" : ""}`} draggable
+            onDragStart={(e) => { setDragging(id); e.dataTransfer.effectAllowed = "move"; }}
+            onDragEnd={() => setDragging(null)}
+            onDragOver={(e) => { e.preventDefault(); e.dataTransfer.dropEffect = "move"; }}
+            onDrop={(e) => { e.preventDefault(); if (dragging && dragging !== id) move(dragging, i); setDragging(null); }}>
+            <div className="widget-tools">
+              <GripVertical className="grip" aria-hidden />
+              <span>{catalog.find((c) => c.id === id)?.label}</span>
+              <span className="spacer" />
+              <button type="button" aria-label={t("Monter")} disabled={i === 0} onClick={() => move(id, i - 1)}><ChevronUp /></button>
+              <button type="button" aria-label={t("Descendre")} disabled={i === widgets.length - 1} onClick={() => move(id, i + 1)}><ChevronDown /></button>
+              <button type="button" aria-label={t("Retirer")} onClick={() => save(widgets.filter((w) => w !== id))}><X /></button>
+            </div>
+            <div className="widget-preview">{render(id)}</div>
+          </div>
+        ) : <div key={id}>{render(id)}</div>)}
+        {editing && (
+          <section className="widget widget-add">
+            <div className="widget-title"><Plus /> {t("Ajouter un widget")}</div>
+            {hidden.length === 0 ? <p className="small muted">{t("Tous les widgets sont déjà sur ton bureau.")}</p> : (
+              <div className="widget-add-list">
+                {hidden.map((w) => (
+                  <button key={w.id} type="button" onClick={() => save([...widgets, w.id])}>
+                    <span className="widget-add-icon">{w.icon}</span>
+                    <span><b>{w.label}</b><small>{w.desc}</small></span>
+                    <Plus className="plus" />
+                  </button>
+                ))}
+              </div>
+            )}
+          </section>
+        )}
+        <div className="widgets-actions">
+          {editing ? (
+            <>
+              <button type="button" className="btn sm glass-btn" onClick={() => save(null)}><RotateCcw /> {t("Par défaut")}</button>
+              <button type="button" className="btn sm primary" onClick={() => setEditing(false)}><Check /> {t("Terminé")}</button>
+            </>
+          ) : (
+            <button type="button" className="btn sm glass-btn" onClick={() => setEditing(true)}><SlidersHorizontal /> {t("Personnaliser")}</button>
+          )}
+        </div>
       </aside>
       <section className="desk-apps">
         <div className="desk-apps-head">

@@ -74,6 +74,7 @@
 | `notify` | Centre de notifications et envoi vers ntfy, Discord, Telegram |
 | `watch` | Surveillance continue (toutes les minutes) qui déclenche les alertes |
 | `backupsched` | Sauvegardes planifiées vers un dossier ou le cloud (rclone) |
+| `appupdate` | Mises à jour automatiques des applications (planning, exclusions, historique) |
 
 ## Adaptation au matériel
 

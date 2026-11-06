@@ -11,6 +11,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/azmoweb/azmoos/internal/appupdate"
 	"github.com/azmoweb/azmoos/internal/auth"
 	"github.com/azmoweb/azmoos/internal/backup"
 	"github.com/azmoweb/azmoos/internal/backupsched"
@@ -55,6 +56,7 @@ type Server struct {
 	Terminal     *terminal.Manager
 	TLS          *tlsmgr.Manager
 	Sched        *backupsched.Scheduler
+	AppUpd       *appupdate.Scheduler
 	HTTPSAddr    string
 	HTTPSHandler http.Handler // gestionnaire servi en HTTPS (le même que HTTP, sans redirection)
 }
@@ -120,6 +122,7 @@ func (s *Server) Handler() http.Handler {
 	s.routesAdmin(handle)
 	s.routesV3(handle)
 	s.routesWallpaper(handle)
+	s.routesV4(handle)
 	mux.Handle("/api/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		fail(w, 404, errors.New("route inconnue"))
 	}))

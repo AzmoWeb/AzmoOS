@@ -9,6 +9,7 @@ import (
 	"testing"
 	"testing/fstest"
 
+	"github.com/azmoweb/azmoos/internal/appupdate"
 	"github.com/azmoweb/azmoos/internal/auth"
 	"github.com/azmoweb/azmoos/internal/backup"
 	"github.com/azmoweb/azmoos/internal/backupsched"
@@ -51,6 +52,7 @@ func newTestServer(t *testing.T) *httptest.Server {
 	s.TLS = tlsmgr.New(conf)
 	s.HTTPSAddr = "127.0.0.1:0"
 	s.Sched = &backupsched.Scheduler{Config: cfg, Backup: s.Backup, Jobs: r, Events: s.Events, Notify: s.Notify, DataDir: data}
+	s.AppUpd = &appupdate.Scheduler{Config: cfg, Apps: st, Events: s.Events, Notify: s.Notify}
 	h := s.Handler()
 	s.HTTPSHandler = h
 	return httptest.NewServer(s.Redirect(h))

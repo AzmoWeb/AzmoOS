@@ -87,4 +87,3 @@ func (s *Server) routesWallpaper(handle routeFn) {
 		ok(w)
 	})
 }
-

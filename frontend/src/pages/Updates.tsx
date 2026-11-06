@@ -8,6 +8,7 @@ import { Badge, Button, Callout, Card, Empty, ErrorBox, Loading, PageHead, Spinn
 import { ago } from "../lib/format";
 import { useEffect, useState } from "react";
 import { t } from "../lib/i18n";
+import { AppAutoUpdates } from "./AppAutoUpdates";
 
 export function Updates() {
   const { toast, confirm } = useUI();
@@ -72,6 +73,7 @@ export function Updates() {
               {!apt && lastApt && <Button size="sm" variant="ghost" style={{ marginTop: 10 }} onClick={() => setLog(lastApt.id)}>{t("Journal de la dernière opération")}</Button>}
             </Card>
           </div>
+          <AppAutoUpdates />
           {d.packages.length > 0 && (
             <div className="card pad-0">
               <div className="table-wrap"><table className="table">
