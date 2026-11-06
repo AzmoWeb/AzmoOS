@@ -1,0 +1,15 @@
+{
+  "name": "Azmo OS",
+  "short_name": "Azmo OS",
+  "description": "Ton serveur personnel sur Raspberry Pi — Made by Azmo",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#15121c",
+  "theme_color": "#15121c",
+  "lang": "fr",
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/logo.svg", "sizes": "any", "type": "image/svg+xml" }
+  ]
+}

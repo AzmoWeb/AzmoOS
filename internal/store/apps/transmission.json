@@ -1,0 +1,21 @@
+{
+  "id": "transmission",
+  "name": "Transmission",
+  "category": "Téléchargement",
+  "icon": "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/transmission.png",
+  "port": 9091,
+  "arch": [
+    "arm64",
+    "amd64"
+  ],
+  "tagline": "Client BitTorrent léger",
+  "description": "Simple, léger, parfait pour un Raspberry Pi.",
+  "compose": "services:\n  transmission:\n    image: lscr.io/linuxserver/transmission:latest\n    container_name: transmission\n    restart: unless-stopped\n    environment:\n      - PUID={{PUID}}\n      - PGID={{PGID}}\n      - TZ={{TZ}}\n    ports:\n      - \"9091:9091\"\n      - \"51413:51413\"\n      - \"51413:51413/udp\"\n    volumes:\n      - {{APPDATA}}/config:/config\n      - {{DATA}}/Downloads:/downloads\n",
+  "minRam": 256,
+  "i18n": {
+    "en": {
+      "tagline": "Lightweight BitTorrent client",
+      "description": "Simple, light, perfect for a Raspberry Pi."
+    }
+  }
+}

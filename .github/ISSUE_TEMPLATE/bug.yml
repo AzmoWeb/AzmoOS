@@ -1,0 +1,32 @@
+name: 🐞 Signaler un bug
+description: Quelque chose ne fonctionne pas comme prévu
+labels: [bug]
+body:
+  - type: input
+    id: model
+    attributes:
+      label: Matériel
+      placeholder: Raspberry Pi 5 8 Go, SSD NVMe
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Version d'Azmo OS
+      description: Réglages → À propos
+      placeholder: v0.2.0
+    validations:
+      required: true
+  - type: textarea
+    id: what
+    attributes:
+      label: Que s'est-il passé ?
+      description: Ce que tu as fait, ce que tu attendais, ce qui s'est passé.
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Journaux
+      description: "Résultat de : sudo journalctl -u azmoos -n 100"
+      render: text

@@ -1,0 +1,9 @@
+avahi-daemon
+curl
+ca-certificates
+samba
+ufw
+exfatprogs
+parted
+rclone
+htop

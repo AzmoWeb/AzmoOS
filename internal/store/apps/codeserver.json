@@ -1,0 +1,23 @@
+{
+  "id": "codeserver",
+  "name": "Code Server",
+  "category": "Développement",
+  "icon": "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/vscode.png",
+  "port": 8543,
+  "arch": [
+    "arm64",
+    "amd64"
+  ],
+  "tagline": "VS Code dans le navigateur",
+  "description": "Codez depuis n'importe où sur votre Raspberry Pi.",
+  "notes": "Mot de passe par défaut : azmoos (variable PASSWORD).",
+  "compose": "services:\n  codeserver:\n    image: lscr.io/linuxserver/code-server:latest\n    container_name: codeserver\n    restart: unless-stopped\n    environment:\n      - PUID={{PUID}}\n      - PGID={{PGID}}\n      - TZ={{TZ}}\n      - PASSWORD=azmoos\n    ports:\n      - \"8543:8443\"\n    volumes:\n      - {{APPDATA}}/config:/config\n",
+  "minRam": 2048,
+  "i18n": {
+    "en": {
+      "tagline": "VS Code in your browser",
+      "description": "Code from anywhere on your Raspberry Pi.",
+      "notes": "Default password: azmoos (PASSWORD variable)."
+    }
+  }
+}

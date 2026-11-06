@@ -1,0 +1,12 @@
+[Unit]
+Description=Azmo OS — point d'accès Wi-Fi de configuration (si aucun réseau)
+After=NetworkManager.service
+Wants=NetworkManager.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/lib/azmoos/azmoos-hotspot.sh
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target

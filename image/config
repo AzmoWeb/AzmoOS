@@ -1,0 +1,15 @@
+# Configuration pi-gen pour l'image AzmoOS (64 bits — Pi 3, 4, 5, 400, 500, Zero 2 W, CM4/CM5)
+IMG_NAME=AzmoOS
+PI_GEN_RELEASE="AzmoOS — made by Azmo"
+ARCH=arm64
+TARGET_HOSTNAME=azmoos
+FIRST_USER_NAME=azmo
+FIRST_USER_PASS=azmoos
+DISABLE_FIRST_BOOT_USER_RENAME=1
+ENABLE_SSH=1
+LOCALE_DEFAULT=fr_FR.UTF-8
+KEYBOARD_KEYMAP=fr
+KEYBOARD_LAYOUT="French"
+TIMEZONE_DEFAULT=Europe/Paris
+DEPLOY_COMPRESSION=xz
+STAGE_LIST="stage0 stage1 stage2 stage-azmo"
